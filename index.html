@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#4338CA" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>cp1-lab · visual C programming — variables, control flow, pointers &amp; data structures</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body, { delimiters: [{left:'$$', right:'$$', display:true},{left:'$', right:'$', display:false}], ignoredTags: ['option','script','textarea'] })"></script>
+
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <span class="dot"></span><strong>cp1-lab</strong>
+        <span class="sub">variables · control flow · functions · pointers · data structures</span>
+      </div>
+      <nav>
+        <a href="#trace">tracing</a>
+        <a href="#expr">expressions</a>
+        <a href="#loop">loops</a>
+        <a href="#recur">recursion</a>
+        <a href="#ptr">pointers</a>
+        <a href="#search">search</a>
+        <a href="#sort">sorting</a>
+        <a href="#list">linked list</a>
+        <a href="#bits">bits</a>
+        <a href="#queens">backtracking</a>
+        <a href="#struct">structs</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- 1. VARIABLE TRACING — Module 0: C basics ---------------------- -->
+      <section class="demo" id="trace">
+        <h2>1. Variable tracing</h2>
+        <p class="cap">Step through a short C program line by line and watch each variable's value change.
+          Tracing by hand is the single most useful debugging habit — the highlighted line is the one
+          <em>about to run</em>, the table shows the state after it executes.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-trace" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>program
+              <select id="tr-prog">
+                <option value="swap" selected>swap two ints</option>
+                <option value="sumdig">sum of digits</option>
+                <option value="pow">integer power</option>
+              </select>
+            </label>
+            <div class="readout"><span>line</span><strong id="tr-line" class="mono">0</strong></div>
+            <div class="readout"><span>status</span><strong id="tr-status" class="mono big">ready</strong></div>
+            <button id="tr-step" class="btn">step</button>
+            <button id="tr-run" class="btn">run</button>
+            <button id="tr-reset" class="btn">reset</button>
+            <p class="hint">Each program is pure integer arithmetic, no I/O.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. EXPRESSIONS — Module 0: operators / types ------------------ -->
+      <section class="demo" id="expr">
+        <h2>2. Expressions &amp; operator precedence</h2>
+        <p class="cap">Type an arithmetic expression in the C grammar (<span class="mono">+ - * / % ( )</span>).
+          It is parsed into a tree showing the order of evaluation, and evaluated under two type regimes —
+          <span class="mono">int</span> (truncating <span class="mono">/</span> and <span class="mono">%</span>)
+          versus <span class="mono">double</span>.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-expr" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>expression
+              <input id="ex-f" type="text" value="2 + 3 * 4 - 14 / 4" spellcheck="false"/></label>
+            <div class="readout"><span>int result</span><strong id="ex-int" class="mono big">—</strong></div>
+            <div class="readout"><span>double result</span><strong id="ex-dbl" class="mono">—</strong></div>
+            <p class="hint" id="ex-err"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. LOOPS — Module 0: control flow ----------------------------- -->
+      <section class="demo" id="loop">
+        <h2>3. Loops — the iteration table</h2>
+        <p class="cap">A counted loop with its three parts: <span class="mono">init ; condition ; update</span>.
+          Each row of the trace is one pass of the loop body; the bar chart shows the accumulator growing.
+          Change the bounds and watch how many times the body actually runs.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-loop" width="600" height="300"></canvas></div>
+          <div class="ctrls">
+            <label>loop body
+              <select id="lp-kind">
+                <option value="sum" selected>sum += i</option>
+                <option value="fact">product *= i</option>
+                <option value="sq">sum += i*i</option>
+              </select>
+            </label>
+            <label>start <span class="mono" id="lp-av">1</span>
+              <input id="lp-a" type="range" min="0" max="8" step="1" value="1"/></label>
+            <label>limit (i &lt; n) <span class="mono" id="lp-nv">6</span>
+              <input id="lp-n" type="range" min="1" max="10" step="1" value="6"/></label>
+            <label>step <span class="mono" id="lp-sv">1</span>
+              <input id="lp-s" type="range" min="1" max="3" step="1" value="1"/></label>
+            <div class="readout"><span>iterations</span><strong id="lp-iters" class="mono">—</strong></div>
+            <div class="readout"><span>final value</span><strong id="lp-final" class="mono big">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. RECURSION — Module 4 (recursion & backtracking) ------------ -->
+      <section class="demo" id="recur">
+        <h2>4. Recursion &amp; the call stack</h2>
+        <p class="cap">A recursive function calls itself on a smaller input until it hits a base case, then the
+          results unwind back up the stack. Watch the call tree expand and the stack grow and shrink.
+          <span class="mono">fib</span> shows why naive recursion is expensive (repeated subproblems).</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-recur" width="600" height="320"></canvas></div>
+          <div class="ctrls">
+            <label>function
+              <select id="rc-fn">
+                <option value="fact" selected>factorial(n)</option>
+                <option value="fib">fib(n)</option>
+                <option value="gcd">gcd(a, b)</option>
+              </select>
+            </label>
+            <label>n <span class="mono" id="rc-nv">4</span>
+              <input id="rc-n" type="range" min="0" max="7" step="1" value="4"/></label>
+            <div class="readout"><span>result</span><strong id="rc-res" class="mono big">—</strong></div>
+            <div class="readout"><span>calls made</span><strong id="rc-calls" class="mono">—</strong></div>
+            <div class="readout"><span>max depth</span><strong id="rc-depth" class="mono">—</strong></div>
+            <p class="hint">Tree nodes are calls; leaves are base cases.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. POINTERS — Module 2 ---------------------------------------- -->
+      <section class="demo" id="ptr">
+        <h2>5. Pointers &amp; memory</h2>
+        <p class="cap">Memory is a row of numbered cells. A pointer is just a variable that holds an address.
+          <span class="mono">&amp;x</span> takes an address, <span class="mono">*p</span> follows one.
+          Move the pointer and step it with pointer arithmetic — <span class="mono">p + 1</span> advances by
+          one <em>element</em>, not one byte.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-ptr" width="600" height="280"></canvas></div>
+          <div class="ctrls">
+            <label>array length <span class="mono" id="pt-nv">6</span>
+              <input id="pt-n" type="range" min="3" max="8" step="1" value="6"/></label>
+            <label>p points at index <span class="mono" id="pt-iv">2</span>
+              <input id="pt-i" type="range" min="0" max="7" step="1" value="2"/></label>
+            <div class="readout"><span>p</span><strong id="pt-addr" class="mono">—</strong></div>
+            <div class="readout"><span>*p</span><strong id="pt-deref" class="mono big">—</strong></div>
+            <div class="readout"><span>*(p + 1)</span><strong id="pt-next" class="mono">—</strong></div>
+            <button id="pt-inc" class="btn">p++</button>
+            <button id="pt-dec" class="btn">p--</button>
+            <p class="hint">int is 4 bytes; addresses shown in hex.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. SEARCH — Module 0 / algorithms ----------------------------- -->
+      <section class="demo" id="search">
+        <h2>6. Linear vs binary search</h2>
+        <p class="cap">Search a sorted array for a target. Linear search checks every cell from the left;
+          binary search halves the range each step but needs sorted data. Watch the probes light up and
+          compare the step counts — the gap is $O(n)$ vs $O(\log n)$.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-search" width="600" height="280"></canvas></div>
+          <div class="ctrls">
+            <label>array size <span class="mono" id="se-nv">15</span>
+              <input id="se-n" type="range" min="5" max="24" step="1" value="15"/></label>
+            <label>target <span class="mono" id="se-tv">—</span>
+              <input id="se-t" type="range" min="0" max="48" step="1" value="20"/></label>
+            <label>algorithm
+              <select id="se-alg">
+                <option value="lin">linear</option>
+                <option value="bin" selected>binary</option>
+              </select>
+            </label>
+            <div class="readout"><span>probes</span><strong id="se-probes" class="mono">—</strong></div>
+            <div class="readout"><span>found at</span><strong id="se-found" class="mono big">—</strong></div>
+            <button id="se-step" class="btn">step</button>
+            <button id="se-reset" class="btn">reset</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. SORTING — algorithms --------------------------------------- -->
+      <section class="demo" id="sort">
+        <h2>7. Sorting algorithms</h2>
+        <p class="cap">Bars are array values. Press play to animate a quadratic sort: bubble, selection or
+          insertion. The two highlighted bars are the pair being compared; counters track comparisons and
+          swaps so you can feel the cost.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-sort" width="600" height="280"></canvas></div>
+          <div class="ctrls">
+            <label>algorithm
+              <select id="so-alg">
+                <option value="bubble" selected>bubble sort</option>
+                <option value="selection">selection sort</option>
+                <option value="insertion">insertion sort</option>
+              </select>
+            </label>
+            <label>size <span class="mono" id="so-nv">14</span>
+              <input id="so-n" type="range" min="5" max="28" step="1" value="14"/></label>
+            <label>speed <span class="mono" id="so-spv">6</span>
+              <input id="so-sp" type="range" min="1" max="12" step="1" value="6"/></label>
+            <div class="readout"><span>comparisons</span><strong id="so-cmp" class="mono">0</strong></div>
+            <div class="readout"><span>swaps</span><strong id="so-swp" class="mono">0</strong></div>
+            <button id="so-play" class="btn">play</button>
+            <button id="so-shuffle" class="btn">shuffle</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. LINKED LIST — Module 4 ------------------------------------- -->
+      <section class="demo" id="list">
+        <h2>8. Linked lists</h2>
+        <p class="cap">A singly linked list: each node stores a value and a pointer to the next node.
+          Insert at the head or tail, delete by value, and watch the <span class="mono">next</span> pointers
+          re-wire. Unlike arrays, insertion is $O(1)$ but there is no random access.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-list" width="600" height="240"></canvas></div>
+          <div class="ctrls">
+            <label>value <span class="mono" id="ll-vv">7</span>
+              <input id="ll-v" type="range" min="0" max="99" step="1" value="7"/></label>
+            <button id="ll-head" class="btn">insert head</button>
+            <button id="ll-tail" class="btn">insert tail</button>
+            <button id="ll-del" class="btn">delete value</button>
+            <button id="ll-clear" class="btn">clear</button>
+            <div class="readout"><span>length</span><strong id="ll-len" class="mono big">0</strong></div>
+            <p class="hint">head → … → NULL. Pointers drawn as arrows.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. BITS — Module 4 (bit manipulation) ------------------------- -->
+      <section class="demo" id="bits">
+        <h2>9. Bit manipulation</h2>
+        <p class="cap">An integer as raw bits. Read it in binary / octal / hex, toggle two's-complement
+          signed mode, and apply a bitwise operator against a mask to see <span class="mono">&amp; | ^ &lt;&lt;</span>
+          in action. Click any bit to flip it.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-bits" width="600" height="260"></canvas></div>
+          <div class="ctrls">
+            <label>value <span class="mono" id="bt-vv">42</span>
+              <input id="bt-v" type="range" min="-128" max="255" step="1" value="42"/></label>
+            <label>width <span class="mono" id="bt-wv">8</span>
+              <input id="bt-w" type="range" min="4" max="16" step="1" value="8"/></label>
+            <label class="check"><input id="bt-tc" type="checkbox"/> two's complement (signed)</label>
+            <label>operation
+              <select id="bt-op">
+                <option value="none" selected>none</option>
+                <option value="and">value &amp; mask</option>
+                <option value="or">value | mask</option>
+                <option value="xor">value ^ mask</option>
+                <option value="shl">value &lt;&lt; 1</option>
+                <option value="shr">value &gt;&gt; 1</option>
+              </select>
+            </label>
+            <label>mask <span class="mono" id="bt-mv">15</span>
+              <input id="bt-m" type="range" min="0" max="255" step="1" value="15"/></label>
+            <div class="readout"><span>binary</span><strong id="bt-bin" class="mono">—</strong></div>
+            <div class="readout"><span>hex</span><strong id="bt-hex" class="mono">—</strong></div>
+            <div class="readout"><span>result</span><strong id="bt-res" class="mono big">—</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. BACKTRACKING — Module 4 ----------------------------------- -->
+      <section class="demo" id="queens">
+        <h2>10. Backtracking — the N-Queens search</h2>
+        <p class="cap">Place $N$ queens so none attack each other. The solver places one queen per column,
+          backtracking whenever a column has no safe row. Step through to see the systematic try /
+          fail / undo rhythm that defines backtracking.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-queens" width="600" height="320"></canvas></div>
+          <div class="ctrls">
+            <label>board size N <span class="mono" id="nq-nv">6</span>
+              <input id="nq-n" type="range" min="4" max="8" step="1" value="6"/></label>
+            <div class="readout"><span>queens placed</span><strong id="nq-placed" class="mono">0</strong></div>
+            <div class="readout"><span>backtracks</span><strong id="nq-bt" class="mono">0</strong></div>
+            <div class="readout"><span>status</span><strong id="nq-status" class="mono big">—</strong></div>
+            <button id="nq-step" class="btn">step</button>
+            <button id="nq-solve" class="btn">solve</button>
+            <button id="nq-reset" class="btn">reset</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. STRUCTS — Module 2 (structures / memory layout) ----------- -->
+      <section class="demo" id="struct">
+        <h2>11. Structs &amp; memory layout</h2>
+        <p class="cap">A <span class="mono">struct</span> groups fields in memory. The compiler aligns each
+          field to its size, inserting hidden <em>padding</em> bytes. Reorder the fields to see how layout
+          and total <span class="mono">sizeof</span> change — biggest-first is usually most compact.</p>
+        <div class="row">
+          <div class="canvas-wrap"><canvas id="cv-struct" width="600" height="240"></canvas></div>
+          <div class="ctrls">
+            <label>field order
+              <select id="st-order">
+                <option value="cid" selected>char, int, double</option>
+                <option value="dic">double, int, char</option>
+                <option value="cdc">char, double, char</option>
+                <option value="sci">short, char, int</option>
+              </select>
+            </label>
+            <div class="readout"><span>data bytes</span><strong id="st-data" class="mono">—</strong></div>
+            <div class="readout"><span>padding</span><strong id="st-pad" class="mono">—</strong></div>
+            <div class="readout"><span>sizeof</span><strong id="st-size" class="mono big">—</strong></div>
+            <p class="hint">char 1 · short 2 · int 4 · double 8 bytes.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>cp1-lab — Andrea Montana · IE BCSAI</span>
+      <span class="more">
+        <a href="https://github.com/andreaisabelmontana/discrete-math-lab" target="_blank">discrete-math-lab</a>
+        <a href="https://github.com/andreaisabelmontana/algos-lab" target="_blank">algos-lab</a>
+        <a href="https://github.com/andreaisabelmontana/programming-principles-lab" target="_blank">programming-principles-lab</a>
+        <a href="https://github.com/andreaisabelmontana/cp1-lab" target="_blank">source</a>
+      </span>
+    </footer>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
