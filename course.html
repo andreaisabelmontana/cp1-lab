@@ -105,6 +105,46 @@
       .biblio .btitle { font-weight: 600; color: var(--ink); }
       .biblio .bmeta { color: var(--muted); font-size: 0.8rem; }
       .biblio .bnote { color: var(--ink-soft); font-size: 0.82rem; margin-top: 0.2rem; }
+      .biblio .bsess { color: var(--accent); font-size: 0.76rem; font-family: var(--font-mono); margin-top: 0.25rem; }
+
+      /* module overview + learning outcomes */
+      .mod-intro { color: var(--ink-soft); font-size: 0.85rem; margin: 0.55rem 0 0; max-width: 78ch; }
+      .outcomes { list-style: none; margin: 0.5rem 0 0.2rem; padding: 0; display: grid; gap: 0.3rem; }
+      .outcomes li { position: relative; padding-left: 1.2rem; color: var(--ink-soft); font-size: 0.82rem; }
+      .outcomes li::before {
+        content: '\2713'; position: absolute; left: 0; top: 0;
+        color: var(--good); font-weight: 700; font-size: 0.8rem;
+      }
+      .outcomes-label {
+        font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
+        color: var(--muted); font-weight: 600; margin: 0.7rem 0 0;
+      }
+
+      /* "key idea" callout + inline concept/syntax */
+      .concept { color: var(--ink-soft); font-size: 0.82rem; margin: 0.35rem 0 0; }
+      .concept .term { color: var(--ink); font-weight: 600; }
+      .keyidea {
+        margin: 0.4rem 0 0; padding: 0.4rem 0.65rem;
+        background: var(--accent-soft); border-left: 2px solid var(--accent);
+        border-radius: 0 4px 4px 0; color: var(--ink-soft); font-size: 0.8rem;
+      }
+      .keyidea .kl { color: var(--accent); font-weight: 700; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      .keyidea code, .concept code, .outcomes code, .mod-intro code, .sess .topics code {
+        font-family: var(--font-mono); font-size: 0.78em; background: #FBFBFD;
+        border: 1px solid var(--rule); border-radius: 3px; padding: 0.05em 0.35em; color: var(--ink);
+      }
+      .sess .topics li .tnote { color: var(--muted); }
+
+      /* glossary */
+      .gloss {
+        margin: 0.4rem 0 0; padding: 0;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 0.1rem 1.5rem;
+      }
+      @media (max-width: 760px) { .gloss { grid-template-columns: 1fr; } }
+      .gloss div { padding: 0.45rem 0; border-bottom: 1px solid var(--rule); }
+      .gloss dt { color: var(--ink); font-weight: 700; font-size: 0.84rem; }
+      .gloss dt code { font-family: var(--font-mono); font-size: 0.82em; color: var(--accent); }
+      .gloss dd { margin: 0.15rem 0 0; color: var(--ink-soft); font-size: 0.8rem; }
     </style>
   </head>
   <body>
@@ -119,6 +159,7 @@
         <a href="#objectives">objectives</a>
         <a href="#methodology">methodology</a>
         <a href="#program">program</a>
+        <a href="#glossary">glossary</a>
         <a href="#biblio">bibliography</a>
         <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
       </nav>
@@ -137,6 +178,12 @@
           about best practices, helpful tools and full programming techniques. The companion
           <a href="./index.html">interactive demos</a> visualize the core ideas: variable tracing,
           control flow, pointers &amp; memory, recursion and the C data structures covered below.</p>
+        <p class="lead">The syllabus is organised as a refresh module (Module 0) followed by six thematic
+          modules that move from program correctness (error handling, testing) through the heart of C
+          (pointers, dynamic memory, structures), the build/preprocessor toolchain, advanced language
+          features (bits, enums, linked lists, recursion), and finally the systems-level material that
+          gives the course its identity: concurrent programming and networked sockets. Two intermediate
+          tests, a group project and a final exam punctuate the 30 live in-person sessions.</p>
 
         <div class="meta-grid">
           <div class="meta-cell"><div class="k">Program code</div><div class="v">CP1-CSAI.2.M.A</div></div>
@@ -174,6 +221,17 @@
         <p class="cap">IE University's teaching method is collaborative, active and applied. The professor
           guides students toward the learning objectives through a diverse mix of activities — lectures,
           hands-on practice, assignments, online resources, project-based and peer learning, and assessments.</p>
+
+        <p class="outcomes-label">The seven teaching techniques used</p>
+        <ul class="outcomes">
+          <li><strong>Lecture-based teaching</strong> — interactive lectures building conceptual understanding of C syntax, control structures, functions, arrays, pointers and data structures, with worked examples.</li>
+          <li><strong>Hands-on practice</strong> — in-class exercises writing and debugging C with proper technique; students are encouraged to work in groups and share knowledge.</li>
+          <li><strong>Assignments</strong> — regular problems that reinforce concepts and challenge students to think creatively, with feedback to improve their skills.</li>
+          <li><strong>Online resources</strong> — tutorials, videos and exercises that supplement lectures and support practice outside of class.</li>
+          <li><strong>Project-based learning</strong> — a course-long group project: identify a problem, design a solution, implement it in C and present it.</li>
+          <li><strong>Peer learning</strong> — group work that fosters a collaborative environment and develops teamwork skills.</li>
+          <li><strong>Assessments</strong> — quizzes, tests and exams that evaluate understanding and surface areas to improve.</li>
+        </ul>
 
         <div class="split">
           <div>
@@ -240,10 +298,27 @@
               <span class="tag">VSCode — editing</span>
             </div>
             <p class="bar-note" style="margin-top:0.7rem"><strong>AI policy:</strong> the use of GenAI is
-              not permitted in this course unless stated by the instructor; AI-generated assessment content
-              is treated as academic misconduct.</p>
+              not permitted in this course unless stated by the instructor; using GenAI would jeopardise the
+              acquisition of fundamental skills, and AI-generated assessment content is treated as academic
+              misconduct that may result in failing the assignment or the course.</p>
           </div>
         </div>
+
+        <h3 style="margin-top:1.2rem">What each component asks for</h3>
+        <ul class="outcomes">
+          <li><strong>Final exam (50%)</strong> — deliverable: a comprehensive written exam with multiple-choice and coding sections (session 30). Evaluation: correctness of answers and quality of code written under exam conditions across the whole syllabus.</li>
+          <li><strong>Intermediate tests (20%)</strong> — deliverable: two midterms (session 9 covering modules 0–2 + file I/O; session 20 covering the networking material). Evaluation: understanding of the concepts and techniques taught up to each test.</li>
+          <li><strong>Group project (20%)</strong> — deliverable: a collaboratively built C program of moderate complexity plus documentation and a presentation (sessions 22–23 development, 28–29 presentation). Evaluation: functionality, code quality, design principles and adherence to best practices learned in the course.</li>
+          <li><strong>Class participation (10%)</strong> — deliverable: sustained, active engagement in lectures, discussions and hands-on work. Evaluation: continuous across the semester.</li>
+        </ul>
+
+        <h3 style="margin-top:1rem">Pass, attendance &amp; re-sit rules</h3>
+        <ul class="outcomes">
+          <li>Each student has four chances to pass a course over two consecutive academic years: ordinary-call exams plus extraordinary-call (re-sit) exams in June/July.</li>
+          <li>Students who do not meet the <strong>80% attendance rule</strong> fail both calls for the year (ordinary and extraordinary) and must re-enrol the following year — they do not get a re-sit.</li>
+          <li>The June/July re-sit is a single comprehensive exam taken in person on campus (Segovia or Madrid); continuous evaluation is not counted, the minimum passing grade is 5, and the maximum obtainable is 8.0 ("notable"). Re-takers (3rd call) may obtain up to 10.0 and must confirm criteria with their assigned professor.</li>
+          <li>A review session follows grading; attending it is a prerequisite for any grade appeal. Failing more than 18 ECTS (single degree) or 21 ECTS (dual) after the re-sits leads to being asked to leave the Program.</li>
+        </ul>
       </section>
 
       <!-- FULL PROGRAM -->
@@ -260,6 +335,15 @@
             <h3>C Language Basics Refresh</h3>
             <span class="msub">environment, tooling &amp; review</span>
           </div>
+          <p class="mod-intro">A short on-ramp that re-establishes the language and, just as importantly, the
+            way you will build and run code all semester. It assumes prior C exposure and moves quickly from
+            "what does this statement do" to "how do I compile and organise a real project".</p>
+          <p class="outcomes-label">By the end of this module you can</p>
+          <ul class="outcomes">
+            <li>Read and reason about basic C: types, expressions, control flow and functions.</li>
+            <li>Drive the course toolchain end-to-end: terminal, Conda env, CMake build, VSCode.</li>
+            <li>Compile a multi-file project with <code>add_executable</code> / <code>add_library</code>.</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">1</span>
@@ -267,15 +351,21 @@
               <p class="sdesc">Presents the general contents of the course and runs a fast refresh of C
                 language basics and environment setup.</p>
               <ul class="topics">
-                <li>Syllabus &amp; course goals</li>
-                <li>C fundamentals refresh: types, expressions, control flow</li>
-                <li>Environment setup</li>
+                <li>Syllabus &amp; course goals <span class="tnote">— modules, assessment weights, the AI policy.</span></li>
+                <li>C fundamentals refresh: types, expressions, control flow <span class="tnote">— <code>int</code>/<code>char</code>/<code>double</code>, operators &amp; precedence, <code>if</code>/<code>while</code>/<code>for</code>.</span></li>
+                <li>Functions &amp; the shape of a C program <span class="tnote">— declarations vs definitions, <code>main()</code>, headers.</span></li>
+                <li>Environment setup <span class="tnote">— compiler, editor and project layout.</span></li>
               </ul>
+              <p class="concept"><span class="term">Core concept — translation unit:</span> a C program is a set of
+                <code>.c</code> files each compiled to an object file, then linked into one executable; the
+                compiler sees one translation unit at a time, which is why declarations in headers matter.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;C is small but unforgiving: there is no
+                runtime safety net, so you reason explicitly about types, memory and undefined behaviour from day one.</p>
               <div class="tags">
                 <span class="tag demo"><a href="./index.html#trace">demo: variable tracing</a></span>
                 <span class="tag demo"><a href="./index.html#expr">demo: expressions</a></span>
                 <span class="tag demo"><a href="./index.html#loop">demo: loops</a></span>
-                <span class="tag read">K&amp;R ch. 1–3</span>
+                <span class="tag read">K&amp;R ch. 1–3 — tutorial intro, types &amp; operators, control flow</span>
               </div>
             </li>
             <li class="sess">
@@ -283,13 +373,19 @@
               <div class="stitle">Tooling</div>
               <p class="sdesc">The development toolchain and intended workflow for the course.</p>
               <ul class="topics">
-                <li>The terminal</li>
-                <li>Conda for dependencies</li>
-                <li>CMake intro (add_executable / add_library) and compiling</li>
-                <li>Workflow: navigate via terminal, activate conda env, open VSCode, run cmake</li>
+                <li>The terminal <span class="tnote">— navigating, running builds and binaries by hand.</span></li>
+                <li>Conda for dependencies <span class="tnote">— isolated, reproducible environments per project.</span></li>
+                <li>CMake intro and compiling <span class="tnote">— <code>add_executable</code>, <code>add_library</code>, configure-then-build.</span></li>
+                <li>Workflow <span class="tnote">— navigate via terminal → activate/create conda env → open VSCode → run cmake.</span></li>
                 <li>VSCode refresher · GitHub Education / Copilot in VS Code</li>
               </ul>
-              <div class="tags"><span class="tag read">PCP — toolchain</span></div>
+              <p class="concept"><span class="term">Core concept — out-of-source build:</span> CMake reads
+                <code>CMakeLists.txt</code> and generates build files in a separate <code>build/</code> directory,
+                keeping generated artefacts out of your source tree.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;A repeatable build is part of the program:
+                if a teammate can <code>cmake</code> and run your code in one command, integration during the group
+                project is painless.</p>
+              <div class="tags"><span class="tag read">PCP — compiler &amp; toolchain workflow</span></div>
             </li>
           </ul>
         </div>
@@ -301,6 +397,15 @@
             <h3>Error Handling and Debugging</h3>
             <span class="msub">2 subtopics</span>
           </div>
+          <p class="mod-intro">Before going deeper into the language, the course establishes how to keep code
+            correct: detecting and reporting errors deliberately, asserting invariants, and proving behaviour
+            with automated tests rather than ad-hoc <code>printf</code> debugging.</p>
+          <p class="outcomes-label">By the end of this module you can</p>
+          <ul class="outcomes">
+            <li>Choose between return-code, <code>errno</code> and assertion strategies for reporting failures.</li>
+            <li>Guard invariants with <code>assert()</code> and understand how <code>NDEBUG</code> disables them.</li>
+            <li>Write and run unit tests with GTest and wire them into a CMake build.</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">3</span>
@@ -308,22 +413,32 @@
               <p class="sdesc">Error handling techniques and assertions in C, while refreshing debugging
                 techniques.</p>
               <ul class="topics">
-                <li>Error handling strategies</li>
-                <li>Assertions</li>
-                <li>Debugging techniques refresh</li>
+                <li>Error handling strategies <span class="tnote">— return codes, sentinel values, <code>errno</code> + <code>perror</code>.</span></li>
+                <li>Assertions <span class="tnote">— <code>assert(cond)</code> aborts when an invariant is violated.</span></li>
+                <li>Debugging techniques refresh <span class="tnote">— breakpoints, stepping, inspecting variables in a debugger.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">PCP — debugging</span></div>
+              <p class="concept"><span class="term">Core concept — contracts vs errors:</span> an
+                <code>assert</code> documents a condition the programmer believes is always true (a bug if false),
+                whereas error handling deals with expected runtime failures such as a missing file.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Assertions catch <em>your</em> mistakes
+                during development; error handling deals with the <em>world's</em> failures at runtime — they are
+                not interchangeable.</p>
+              <div class="tags"><span class="tag read">PCP — debugging &amp; defensive programming</span></div>
             </li>
             <li class="sess">
               <span class="num">4</span>
               <div class="stitle">Unit Testing <span class="msub">· subtopic 2/3</span></div>
               <p class="sdesc">Writing and running automated tests for C code.</p>
               <ul class="topics">
-                <li>Unit testing principles</li>
-                <li>GTest</li>
-                <li>Setting up tests in CMake</li>
+                <li>Unit testing principles <span class="tnote">— isolate a unit, arrange–act–assert, test edge cases.</span></li>
+                <li>GTest <span class="tnote">— <code>TEST(Suite, Name)</code> macros and <code>EXPECT_*</code>/<code>ASSERT_*</code> checks.</span></li>
+                <li>Setting up tests in CMake <span class="tnote">— register tests so <code>ctest</code> can run them.</span></li>
               </ul>
-              <div class="tags"><span class="tag">GTest · CMake</span></div>
+              <p class="concept"><span class="term">Core concept — regression safety:</span> a unit test pins
+                down expected behaviour so that a future change which breaks it fails loudly instead of silently.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Tests are the executable specification of
+                your functions; once wired into CMake/ctest they turn "I think it works" into "the build proves it".</p>
+              <div class="tags"><span class="tag">GTest · CMake · ctest</span></div>
             </li>
           </ul>
         </div>
@@ -335,6 +450,15 @@
             <h3>Pointers and Structures</h3>
             <span class="msub">3 subtopics</span>
           </div>
+          <p class="mod-intro">The conceptual core of the course. Pointers, the heap and aggregate types are what
+            let C model real data structures and manage memory by hand — the foundation every later module
+            (linked lists, threads, socket buffers) builds on.</p>
+          <p class="outcomes-label">By the end of this module you can</p>
+          <ul class="outcomes">
+            <li>Declare, dereference and do arithmetic with pointers, relating them to memory addresses.</li>
+            <li>Allocate and free heap memory with <code>malloc</code>/<code>calloc</code>/<code>realloc</code>/<code>free</code> without leaking.</li>
+            <li>Model related data with <code>struct</code> and overlapping data with <code>union</code>.</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">5</span>
@@ -342,13 +466,19 @@
               <p class="sdesc">Refresh the concept of pointers, their purpose, and their relationship with
                 memory addresses.</p>
               <ul class="topics">
-                <li>Pointer declaration &amp; initialization</li>
-                <li>Referencing &amp; dereferencing</li>
-                <li>Pointer arithmetic — how and why it is useful</li>
+                <li>Pointer declaration &amp; initialization <span class="tnote">— <code>int *p = &amp;x;</code> holds the address of <code>x</code>.</span></li>
+                <li>Referencing &amp; dereferencing <span class="tnote">— <code>&amp;</code> takes an address, <code>*</code> reads/writes the value there.</span></li>
+                <li>Pointer arithmetic <span class="tnote">— <code>p + 1</code> advances by <code>sizeof(*p)</code> bytes; the array/pointer duality.</span></li>
               </ul>
+              <p class="concept"><span class="term">Core concept — a pointer is a typed address:</span> its value
+                is a memory location and its type says how many bytes to read and how to interpret them, which is
+                why <code>char*</code> and <code>int*</code> step differently.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Pass-by-pointer lets a function modify the
+                caller's data and lets you share large objects without copying — the mechanism behind output
+                parameters and every dynamic data structure.</p>
               <div class="tags">
                 <span class="tag demo"><a href="./index.html#ptr">demo: pointers &amp; memory</a></span>
-                <span class="tag read">K&amp;R ch. 5</span>
+                <span class="tag read">K&amp;R ch. 5 — pointers &amp; arrays</span>
               </div>
             </li>
             <li class="sess">
@@ -357,11 +487,20 @@
               <p class="sdesc">Allocating and deallocating memory at runtime for flexible, efficient memory
                 management.</p>
               <ul class="topics">
-                <li>malloc / calloc / realloc / free</li>
-                <li>Runtime allocation &amp; deallocation</li>
-                <li>Efficient memory management patterns</li>
+                <li><code>malloc</code> / <code>calloc</code> / <code>realloc</code> / <code>free</code> <span class="tnote">— request, zero-init, resize and release heap blocks.</span></li>
+                <li>Runtime allocation &amp; deallocation <span class="tnote">— sizing buffers when the size is unknown at compile time.</span></li>
+                <li>Memory bugs <span class="tnote">— leaks, double-free, use-after-free, dangling pointers.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">K&amp;R §7.8, §8.7</span></div>
+              <p class="concept"><span class="term">Core concept — stack vs heap:</span> locals live on the stack
+                and vanish when a function returns; <code>malloc</code> returns heap memory that lives until you
+                <code>free</code> it, so every allocation needs an owner responsible for releasing it.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;In C, lifetime is your job: pair every
+                <code>malloc</code> with exactly one <code>free</code>, and always check the returned pointer for
+                <code>NULL</code> before using it.</p>
+              <div class="tags">
+                <span class="tag demo"><a href="./index.html#ptr">demo: pointers &amp; memory</a></span>
+                <span class="tag read">K&amp;R §7.8, §8.7 — storage allocation</span>
+              </div>
             </li>
             <li class="sess">
               <span class="num">7</span>
@@ -369,13 +508,20 @@
               <p class="sdesc">Structures and unions as data constructs that organize and manipulate related
                 data elements.</p>
               <ul class="topics">
-                <li>struct definition &amp; member access</li>
-                <li>Unions</li>
-                <li>Intro to data-oriented programming</li>
+                <li><code>struct</code> definition &amp; member access <span class="tnote">— <code>s.field</code> on a value, <code>p-&gt;field</code> through a pointer.</span></li>
+                <li>Unions <span class="tnote">— members share one block of memory; only one is valid at a time.</span></li>
+                <li>Memory layout <span class="tnote">— padding &amp; alignment affect <code>sizeof(struct)</code>.</span></li>
+                <li>Intro to data-oriented programming <span class="tnote">— organising data for cache-friendly access.</span></li>
               </ul>
+              <p class="concept"><span class="term">Core concept — struct vs union:</span> a <code>struct</code>
+                lays its members out side by side (total size = sum + padding); a <code>union</code> overlaps them
+                (size = the largest member), trading safety for compact, reinterpretable storage.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Structs let you name and pass aggregates as
+                first-class values; combined with pointers they are the building block of every node-based data
+                structure later in the course.</p>
               <div class="tags">
                 <span class="tag demo"><a href="./index.html#struct">demo: structs &amp; memory layout</a></span>
-                <span class="tag read">K&amp;R ch. 6</span>
+                <span class="tag read">K&amp;R ch. 6 — structures</span>
               </div>
             </li>
           </ul>
@@ -388,6 +534,15 @@
             <h3>File Handling and Preprocessor Directives</h3>
             <span class="msub">file I/O · macros · midterm</span>
           </div>
+          <p class="mod-intro">How a C program talks to the outside world through files, and how the preprocessor
+            shapes the source before it is compiled. The first midterm sits inside this module, consolidating
+            everything from modules 0–2.</p>
+          <p class="outcomes-label">By the end of this module you can</p>
+          <ul class="outcomes">
+            <li>Open, read, write and close files with the <code>FILE*</code> stream API, handling errors and releasing resources.</li>
+            <li>Use preprocessor directives (<code>#include</code>, <code>#define</code>, conditional compilation, include guards).</li>
+            <li>Write safe function-like macros and know when an <code>inline</code> function or constant is better.</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">8</span>
@@ -395,17 +550,25 @@
               <p class="sdesc">Reading from and writing to files, with proper error handling and resource
                 management.</p>
               <ul class="topics">
-                <li>Input/Output</li>
-                <li>Dealing with files</li>
-                <li>Error handling &amp; resource management with files</li>
+                <li>Input/Output <span class="tnote">— <code>printf</code>/<code>scanf</code> family and the standard streams.</span></li>
+                <li>Dealing with files <span class="tnote">— <code>fopen</code>, <code>fread</code>/<code>fwrite</code>, <code>fgets</code>, <code>fclose</code>.</span></li>
+                <li>Error handling &amp; resource management <span class="tnote">— check return values, <code>feof</code>/<code>ferror</code>, always close.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">K&amp;R ch. 7</span></div>
+              <p class="concept"><span class="term">Core concept — the <code>FILE*</code> stream:</span>
+                <code>fopen</code> returns a handle to a buffered stream; reads/writes go through that buffer and
+                are flushed to disk on <code>fflush</code>/<code>fclose</code>, so failing to close can lose data.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;A file handle is a resource just like heap
+                memory: acquire it, check it opened, use it, and release it on every path — including error paths.</p>
+              <div class="tags"><span class="tag read">K&amp;R ch. 7 — input &amp; output</span></div>
             </li>
             <li class="sess exam">
               <span class="num">9</span>
               <div class="stitle">First Midterm</div>
-              <p class="sdesc">First intermediate test covering modules 0–2 and file I/O.</p>
-              <div class="tags"><span class="tag">assessment · 20% block</span></div>
+              <p class="sdesc">First intermediate test covering modules 0–2 and file I/O: C fundamentals,
+                error handling &amp; testing, pointers, dynamic memory, structures/unions and file streams.</p>
+              <p class="keyidea"><span class="kl">Assessment</span> &nbsp;Counts toward the 20% intermediate-tests
+                component (shared with the session-20 mid exam). Expect both conceptual questions and short coding tasks.</p>
+              <div class="tags"><span class="tag">assessment · part of 20%</span></div>
             </li>
             <li class="sess">
               <span class="num">10</span>
@@ -413,11 +576,17 @@
               <p class="sdesc">Commands that instruct the compiler before compilation, and macros for reusable
                 inline code snippets and constants.</p>
               <ul class="topics">
-                <li>Preprocessor directives (#include, #define, conditional compilation)</li>
-                <li>Function-like macros &amp; constants</li>
-                <li>Inline expansion during compilation</li>
+                <li>Preprocessor directives <span class="tnote">— <code>#include</code>, <code>#define</code>, <code>#ifdef</code>/<code>#ifndef</code> conditional compilation.</span></li>
+                <li>Function-like macros &amp; constants <span class="tnote">— <code>#define MAX(a,b) ((a)&gt;(b)?(a):(b))</code>; parenthesise arguments.</span></li>
+                <li>Include guards <span class="tnote">— prevent a header being processed twice.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">K&amp;R §4.11</span></div>
+              <p class="concept"><span class="term">Core concept — textual substitution:</span> the preprocessor
+                runs before compilation and simply rewrites text — macros have no type checking and no scope, which
+                is why over-using them is risky compared with <code>const</code> or <code>inline</code> functions.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Macros are powerful but blunt: wrap every
+                parameter and the whole body in parentheses to avoid precedence surprises, and prefer real functions
+                when types matter.</p>
+              <div class="tags"><span class="tag read">K&amp;R §4.11 — the C preprocessor</span></div>
             </li>
           </ul>
         </div>
@@ -429,6 +598,16 @@
             <h3>Advanced Concepts in C</h3>
             <span class="msub">4 subtopics</span>
           </div>
+          <p class="mod-intro">A tour of the techniques that distinguish fluent C: operating at the bit level,
+            naming things well with enums and typedefs, building your first pointer-based data structure, and
+            thinking recursively. Together these prepare you for the systems modules that follow.</p>
+          <p class="outcomes-label">By the end of this module you can</p>
+          <ul class="outcomes">
+            <li>Manipulate individual bits with <code>&amp; | ^ ~ &lt;&lt; &gt;&gt;</code> and pack flags into integers.</li>
+            <li>Improve clarity with <code>enum</code> constants and <code>typedef</code> aliases.</li>
+            <li>Implement a singly linked list with <code>malloc</code>'d nodes and pointer surgery.</li>
+            <li>Design recursive solutions with correct base cases and apply backtracking.</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">11</span>
@@ -436,13 +615,20 @@
               <p class="sdesc">Binary operations and manipulating individual bits for efficient, optimized
                 solutions.</p>
               <ul class="topics">
-                <li>Bit manipulation (Carmack's fast inverse sqrt, Morton hash for spatial hashing)</li>
-                <li>1's vs 2's complement</li>
-                <li>Using enums as flags</li>
+                <li>Bitwise operators <span class="tnote">— <code>&amp;</code> mask, <code>|</code> set, <code>^</code> toggle, <code>~</code> invert, <code>&lt;&lt;</code>/<code>&gt;&gt;</code> shift.</span></li>
+                <li>Famous tricks <span class="tnote">— Carmack's fast inverse square root, Morton codes for spatial hashing.</span></li>
+                <li>1's vs 2's complement <span class="tnote">— how signed integers are represented in binary.</span></li>
+                <li>Using enums as flags <span class="tnote">— powers of two OR'd into one integer.</span></li>
               </ul>
+              <p class="concept"><span class="term">Core concept — masking:</span> to test a bit use
+                <code>x &amp; (1u &lt;&lt; n)</code>, to set it <code>x |= (1u &lt;&lt; n)</code>, to clear it
+                <code>x &amp;= ~(1u &lt;&lt; n)</code> — the basis of compact flag sets and hardware registers.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Bit tricks turn many separate booleans into
+                one fast integer and unlock optimisations the compiler can't infer — but they trade readability for
+                speed, so comment them.</p>
               <div class="tags">
                 <span class="tag demo"><a href="./index.html#bits">demo: bit manipulation</a></span>
-                <span class="tag read">PCP — bitwise ops</span>
+                <span class="tag read">PCP — bit operations</span>
               </div>
             </li>
             <li class="sess">
@@ -451,11 +637,16 @@
               <p class="sdesc">Named-constant sets and custom type aliases to enhance readability,
                 maintainability and efficiency.</p>
               <ul class="topics">
-                <li>enum for named constants</li>
-                <li>typedef for type aliases</li>
-                <li>Code readability &amp; maintainability</li>
+                <li><code>enum</code> for named constants <span class="tnote">— <code>enum Color { RED, GREEN, BLUE };</code> auto-numbered from 0.</span></li>
+                <li><code>typedef</code> for type aliases <span class="tnote">— <code>typedef struct Node Node;</code> drops the <code>struct</code> keyword.</span></li>
+                <li>Code readability &amp; maintainability <span class="tnote">— self-documenting names instead of magic numbers.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">K&amp;R §2.3, §6.7</span></div>
+              <p class="concept"><span class="term">Core concept — naming as design:</span> an <code>enum</code>
+                gives a fixed set of states a name and lets the compiler/switch help you cover them; a
+                <code>typedef</code> hides repetitive type spelling and makes intent clear.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Replacing magic numbers with enums and long
+                type names with typedefs makes code read like its problem domain — fewer bugs, easier review.</p>
+              <div class="tags"><span class="tag read">K&amp;R §2.3 enums, §6.7 typedef</span></div>
             </li>
             <li class="sess">
               <span class="num">13</span>
@@ -463,13 +654,19 @@
               <p class="sdesc">A fundamental dynamic data structure enabling efficient insertion, deletion and
                 traversal.</p>
               <ul class="topics">
-                <li>Node = value + next pointer</li>
-                <li>Insertion, deletion, traversal</li>
-                <li>Dynamic storage vs arrays</li>
+                <li>Node = value + next pointer <span class="tnote">— <code>struct Node { int v; struct Node *next; };</code></span></li>
+                <li>Insertion, deletion, traversal <span class="tnote">— relink <code>next</code> pointers; walk until <code>NULL</code>.</span></li>
+                <li>Dynamic storage vs arrays <span class="tnote">— O(1) insert/delete vs O(1) random access trade-off.</span></li>
               </ul>
+              <p class="concept"><span class="term">Core concept — self-referential struct:</span> a node contains a
+                pointer to its own type, so a list is a chain of heap nodes ending in <code>NULL</code>; this brings
+                together structs, pointers and <code>malloc</code>/<code>free</code> from Module 2.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Linked lists trade contiguous memory and
+                random access for cheap insertion/deletion anywhere — the classic data-structure trade-off you'll
+                weigh for the rest of your degree.</p>
               <div class="tags">
                 <span class="tag demo"><a href="./index.html#list">demo: linked lists</a></span>
-                <span class="tag read">K&amp;R §6.5</span>
+                <span class="tag read">K&amp;R §6.5 — self-referential structures</span>
               </div>
             </li>
             <li class="sess">
@@ -478,9 +675,16 @@
               <p class="sdesc">Solving problems by reducing them to smaller instances, and systematically
                 exploring solution spaces by building and undoing partial solutions.</p>
               <ul class="topics">
-                <li>Recursion &amp; base cases / the call stack</li>
-                <li>Backtracking — try / fail / undo</li>
+                <li>Recursion &amp; base cases <span class="tnote">— a function that calls itself on a smaller input; the base case stops it.</span></li>
+                <li>The call stack <span class="tnote">— each call gets a frame; deep recursion risks stack overflow.</span></li>
+                <li>Backtracking <span class="tnote">— choose → recurse → undo, exploring a search tree (e.g. N-Queens).</span></li>
               </ul>
+              <p class="concept"><span class="term">Core concept — recurrence + base case:</span> a correct recursion
+                needs a base case that returns without recursing and a recursive step that strictly shrinks the
+                problem toward it, otherwise it never terminates.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Backtracking is recursion plus an "undo":
+                tentatively make a choice, recurse, and if it leads nowhere, revert and try the next — the engine
+                behind solving puzzles and constraint problems.</p>
               <div class="tags">
                 <span class="tag demo"><a href="./index.html#recur">demo: recursion &amp; call stack</a></span>
                 <span class="tag demo"><a href="./index.html#queens">demo: N-Queens backtracking</a></span>
@@ -496,6 +700,15 @@
             <h3>Concurrent Programming</h3>
             <span class="msub">2 subtopics</span>
           </div>
+          <p class="mod-intro">Modern machines have many cores; this module shows how to run parts of a program
+            simultaneously and — harder — how to keep shared data correct when they do. It moves from creating
+            threads to coordinating them safely.</p>
+          <p class="outcomes-label">By the end of this module you can</p>
+          <ul class="outcomes">
+            <li>Create, join and reason about the lifecycle of POSIX threads.</li>
+            <li>Identify race conditions and protect critical sections with mutexes, semaphores and barriers.</li>
+            <li>Recognise when higher-level frameworks (OpenMP, MPI) are the better tool.</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">15</span>
@@ -503,22 +716,33 @@
               <p class="sdesc">Taking advantage of multi-core platforms where parts of a program execute
                 simultaneously, using C's multithreading capabilities.</p>
               <ul class="topics">
-                <li>Why concurrency: multiple processors / cores</li>
-                <li>Thread creation &amp; lifecycle</li>
-                <li>Basics of concurrent programming in C</li>
+                <li>Why concurrency <span class="tnote">— multiple cores let independent work run in parallel.</span></li>
+                <li>Thread creation &amp; lifecycle <span class="tnote">— <code>pthread_create</code> → run → <code>pthread_join</code>.</span></li>
+                <li>Basics of concurrent programming in C <span class="tnote">— passing arguments to and returning from threads.</span></li>
               </ul>
-              <div class="tags"><span class="tag">POSIX threads</span></div>
+              <p class="concept"><span class="term">Core concept — thread vs process:</span> threads of one process
+                share the same address space (and therefore the same heap and globals), which makes communication
+                cheap but means uncoordinated access to shared data is dangerous.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Concurrency can speed a program up, but
+                shared mutable state is the source of nearly every concurrency bug — the next session is about
+                taming exactly that.</p>
+              <div class="tags"><span class="tag">POSIX threads (pthreads)</span></div>
             </li>
             <li class="sess">
               <span class="num">16</span>
               <div class="stitle">Advanced Thread Management <span class="msub">· subtopic 2/2</span></div>
               <p class="sdesc">Handling common thread issues to build reliable, optimized programs.</p>
               <ul class="topics">
-                <li>Race conditions, shared data, critical sections</li>
-                <li>POSIX threads, semaphores &amp; barriers</li>
-                <li>Overview of higher-level constructs (OpenMP, MPI)</li>
+                <li>Race conditions, shared/critical data, critical sections <span class="tnote">— when result depends on timing of interleaved access.</span></li>
+                <li>Synchronisation primitives <span class="tnote">— mutexes (lock/unlock), semaphores (counted access), barriers (rendezvous).</span></li>
+                <li>Higher-level constructs <span class="tnote">— OpenMP pragmas for shared-memory parallelism, MPI for message passing.</span></li>
               </ul>
-              <div class="tags"><span class="tag">pthreads · OpenMP · MPI</span></div>
+              <p class="concept"><span class="term">Core concept — mutual exclusion:</span> a mutex guarantees only
+                one thread enters a critical section at a time, so a read-modify-write on shared data can't be
+                interleaved; the cost is potential contention and, if misused, deadlock.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Protect the smallest possible critical
+                section: too little locking causes races, too much serialises everything and throws away the speedup.</p>
+              <div class="tags"><span class="tag">pthreads · semaphores · OpenMP · MPI</span></div>
             </li>
           </ul>
         </div>
@@ -530,17 +754,32 @@
             <h3>Networking and Sockets</h3>
             <span class="msub">4 subtopics · mid exam</span>
           </div>
+          <p class="mod-intro">The capstone technical module: writing C programs that talk over a network. It
+            starts from the socket abstraction, builds client–server programs over TCP and UDP, secures them with
+            TLS, and ends by surveying real networked applications. The second midterm sits inside it.</p>
+          <p class="outcomes-label">By the end of this module you can</p>
+          <ul class="outcomes">
+            <li>Explain what a socket is and use the Socket API to send and receive data.</li>
+            <li>Build client–server programs and choose between reliable TCP and lightweight UDP.</li>
+            <li>Reason about how TLS/HTTPS secures a connection with encryption and certificates.</li>
+            <li>Recognise the architecture of real networked applications such as web servers.</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">17</span>
               <div class="stitle">Socket Programming in C for Network Communication <span class="msub">· subtopic 1/4</span></div>
               <p class="sdesc">Networking concepts and the Socket API to enable communication across networks.</p>
               <ul class="topics">
-                <li>Networking concepts</li>
-                <li>What a socket is</li>
-                <li>Using the Socket API</li>
+                <li>Networking concepts <span class="tnote">— IP addresses, ports, the client/server roles.</span></li>
+                <li>What a socket is <span class="tnote">— an endpoint for communication, used through a file-descriptor-like handle.</span></li>
+                <li>Using the Socket API <span class="tnote">— <code>socket</code>, <code>bind</code>, <code>connect</code>, <code>send</code>/<code>recv</code>.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">HNP ch. 1–3</span></div>
+              <p class="concept"><span class="term">Core concept — the socket as a file descriptor:</span> once
+                created, a socket is read and written much like a file, which is why network I/O reuses the same
+                mental model as Module 3's file streams.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;A socket is identified by an address+port
+                pair; getting two programs to agree on that pair is the whole game of establishing a connection.</p>
+              <div class="tags"><span class="tag read">HNP ch. 1–3 — networking &amp; the socket API</span></div>
             </li>
             <li class="sess">
               <span class="num">18</span>
@@ -548,38 +787,58 @@
               <p class="sdesc">Network protocols and the client–server model across different transport
                 protocols.</p>
               <ul class="topics">
-                <li>Introduction to network protocols</li>
-                <li>TCP protocol &amp; socket I/O operations</li>
-                <li>UDP protocol &amp; socket I/O operations</li>
+                <li>Introduction to network protocols <span class="tnote">— the layered model and where TCP/UDP sit.</span></li>
+                <li>TCP &amp; socket I/O <span class="tnote">— <code>listen</code>/<code>accept</code> server loop; connection-oriented, reliable, ordered stream.</span></li>
+                <li>UDP &amp; socket I/O <span class="tnote">— <code>sendto</code>/<code>recvfrom</code>; connectionless datagrams, no delivery guarantee.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">HNP — TCP/UDP</span></div>
+              <p class="concept"><span class="term">Core concept — TCP vs UDP:</span> TCP gives a reliable, ordered
+                byte stream at the cost of handshakes and buffering; UDP sends independent datagrams with minimal
+                overhead but no guarantees — you pick based on whether the app needs reliability or low latency.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;The server's <code>accept</code> loop and the
+                client's <code>connect</code> are the canonical client–server pattern that underlies almost every
+                networked program you'll write.</p>
+              <div class="tags"><span class="tag read">HNP — TCP &amp; UDP client/server</span></div>
             </li>
             <li class="sess">
               <span class="num">19</span>
               <div class="stitle">Secure Connections with Sockets <span class="msub">· subtopic 3/4</span></div>
               <p class="sdesc">Securing network connections using standard protocols via C.</p>
               <ul class="topics">
-                <li>HTTPS and TLS</li>
-                <li>Encryption &amp; certificate basics</li>
-                <li>How TLS secures connections</li>
+                <li>HTTPS and TLS <span class="tnote">— TLS wraps a TCP socket to add confidentiality and integrity.</span></li>
+                <li>Encryption basics <span class="tnote">— symmetric vs asymmetric keys; the handshake that agrees a session key.</span></li>
+                <li>Certificates <span class="tnote">— how a CA-signed certificate authenticates the server's identity.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">HNP — TLS/HTTPS</span></div>
+              <p class="concept"><span class="term">Core concept — the TLS handshake:</span> client and server use
+                asymmetric crypto and a certificate to authenticate and agree on a shared symmetric key, then
+                encrypt the rest of the conversation with that faster symmetric cipher.</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Security isn't a feature bolted on at the
+                end: TLS sits between your application and the raw socket, so "make it secure" means changing how
+                you open and read/write the connection, not the business logic.</p>
+              <div class="tags"><span class="tag read">HNP — TLS, HTTPS &amp; secure sockets</span></div>
             </li>
             <li class="sess exam">
               <span class="num">20</span>
               <div class="stitle">Mid Exam</div>
-              <p class="sdesc">Second intermediate test (second midterm).</p>
-              <div class="tags"><span class="tag">assessment · 20% block</span></div>
+              <p class="sdesc">Second intermediate test, focusing on the advanced-C and networking material
+                (bit manipulation, enums/typedef, linked lists, recursion, concurrency and sockets).</p>
+              <p class="keyidea"><span class="kl">Assessment</span> &nbsp;Together with the session-9 midterm this
+                makes up the 20% intermediate-tests component.</p>
+              <div class="tags"><span class="tag">assessment · part of 20%</span></div>
             </li>
             <li class="sess">
               <span class="num">21</span>
               <div class="stitle">Networked Applications <span class="msub">· subtopic 4/4</span></div>
               <p class="sdesc">Reviewing real-world networked applications buildable with the course concepts.</p>
               <ul class="topics">
-                <li>Real-world networked applications</li>
-                <li>Example: web servers</li>
+                <li>Real-world networked applications <span class="tnote">— putting sockets, protocols and concurrency together.</span></li>
+                <li>Example: web servers <span class="tnote">— accept loop + request parsing + concurrent connection handling.</span></li>
               </ul>
-              <div class="tags"><span class="tag read">HNP — applications</span></div>
+              <p class="concept"><span class="term">Core concept — synthesis:</span> a simple web server combines
+                almost the whole course — sockets and TCP (Module 6), threads to serve clients concurrently
+                (Module 5), buffers and parsing (Modules 2–3) and careful error handling (Module 1).</p>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;This is where the pieces click: the skills
+                taught separately become one program that does something genuinely useful over a network.</p>
+              <div class="tags"><span class="tag read">HNP — building networked applications</span></div>
             </li>
           </ul>
         </div>
@@ -591,6 +850,15 @@
             <h3>Group Project, Labs &amp; Exams</h3>
             <span class="msub">sessions 22–30</span>
           </div>
+          <p class="mod-intro">The final stretch turns knowledge into a deliverable: a collaboratively built C
+            program, a look beyond C at programming paradigms, flexible lab time, revision, and the project
+            presentations and final exam.</p>
+          <p class="outcomes-label">By the end you will have</p>
+          <ul class="outcomes">
+            <li>Designed, built, tested and documented a C program as a team.</li>
+            <li>Presented and defended your project on functionality, code quality and best practices.</li>
+            <li>Situated C within the wider landscape of programming paradigms (mainly OOP).</li>
+          </ul>
           <ul class="timeline">
             <li class="sess">
               <span class="num">22</span>
@@ -598,10 +866,14 @@
               <p class="sdesc">Collaborative Program Development — develop a C program as a team, applying
                 course concepts to a real-world problem.</p>
               <ul class="topics">
-                <li>Group formation (3–5 members)</li>
-                <li>Program selection &amp; planning/design</li>
-                <li>Task allocation, collaboration &amp; code integration</li>
+                <li>Group formation <span class="tnote">— 3–5 members, self-selected or assigned for a mix of skills.</span></li>
+                <li>Program selection <span class="tnote">— a problem of moderate complexity exercising several course concepts.</span></li>
+                <li>Planning &amp; design <span class="tnote">— objectives, required input/output, and the tasks to split.</span></li>
+                <li>Task allocation <span class="tnote">— modules, functions, debugging, testing, docs, integration.</span></li>
               </ul>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;Group work simulates real software
+                development: communication and clean interfaces between members' code matter as much as the
+                algorithms themselves.</p>
               <div class="tags"><span class="tag">project · 20%</span></div>
             </li>
             <li class="sess">
@@ -610,81 +882,148 @@
               <p class="sdesc">Continued collaborative development: integration, testing/debugging and
                 documentation of the group program.</p>
               <ul class="topics">
-                <li>Code integration</li>
-                <li>Testing &amp; debugging</li>
-                <li>Documentation of functionality, design choices &amp; contributions</li>
+                <li>Code integration <span class="tnote">— merge individual contributions into one cohesive program.</span></li>
+                <li>Testing &amp; debugging <span class="tnote">— systematic error identification to ensure correctness.</span></li>
+                <li>Documentation <span class="tnote">— functionality, I/O spec, design choices, algorithms and per-member contributions.</span></li>
               </ul>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;The unit-testing and error-handling skills
+                from Module 1 pay off here — a documented, tested integration is what gets evaluated, not just code
+                that compiles.</p>
               <div class="tags"><span class="tag">project · 20%</span></div>
             </li>
             <li class="sess">
               <span class="num">24</span>
               <div class="stitle">Programming Paradigms (mainly OOP)</div>
               <p class="sdesc">Introduction to programming paradigms with a focus on object-oriented
-                programming.</p>
-              <div class="tags"><span class="tag">paradigms</span></div>
+                programming, set against the procedural style of C.</p>
+              <ul class="topics">
+                <li>Procedural vs object-oriented thinking</li>
+                <li>Encapsulation, inheritance, polymorphism — the OOP pillars</li>
+                <li>How OOP ideas can be emulated in C (structs + function pointers)</li>
+              </ul>
+              <p class="keyidea"><span class="kl">Key idea</span> &nbsp;C is procedural, but understanding OOP
+                clarifies <em>why</em> certain C idioms (opaque structs, function-pointer tables) exist and prepares
+                you for later object-oriented languages.</p>
+              <div class="tags"><span class="tag">paradigms · OOP</span></div>
             </li>
             <li class="sess">
               <span class="num">25</span>
               <div class="stitle">Programming Paradigms (mainly OOP)</div>
-              <p class="sdesc">Continued exploration of programming paradigms and OOP concepts.</p>
-              <div class="tags"><span class="tag">paradigms</span></div>
+              <p class="sdesc">Continued exploration of programming paradigms and OOP concepts, with examples
+                contrasting them against the C techniques learned earlier.</p>
+              <ul class="topics">
+                <li>Abstraction &amp; modularity across paradigms</li>
+                <li>When each paradigm fits a problem</li>
+              </ul>
+              <div class="tags"><span class="tag">paradigms · OOP</span></div>
             </li>
             <li class="sess">
               <span class="num">26</span>
               <div class="stitle">Advanced Concepts (LAB)</div>
-              <p class="sdesc">Lab session on advanced concepts, depending on the progress of the course.</p>
-              <div class="tags"><span class="tag">lab</span></div>
+              <p class="sdesc">Flexible hands-on lab on advanced concepts, with the exact topics chosen
+                depending on the progress of the course — extra time for the trickier material from earlier modules
+                or a deeper dive on a topic of interest.</p>
+              <div class="tags"><span class="tag">lab · hands-on</span></div>
             </li>
             <li class="sess">
               <span class="num">27</span>
               <div class="stitle">Revision</div>
-              <p class="sdesc">Course-wide revision session ahead of final assessments. :)</p>
+              <p class="sdesc">Course-wide revision session ahead of final assessments — consolidating the six
+                modules and clarifying open questions before the final project presentation and exam. :)</p>
               <div class="tags"><span class="tag">revision</span></div>
             </li>
             <li class="sess">
               <span class="num">28</span>
               <div class="stitle">Final Project Presentation &amp; Evaluation</div>
-              <p class="sdesc">Students present final projects; evaluated on functionality, code quality,
-                design principles and best practices.</p>
+              <p class="sdesc">Students present their final projects to the instructor and peers; evaluated on
+                functionality, code quality, design principles and adherence to the best practices learned
+                throughout the course.</p>
+              <p class="keyidea"><span class="kl">Assessment</span> &nbsp;The presentation is part of the 20% group
+                project grade; be ready to explain design choices and individual contributions.</p>
               <div class="tags"><span class="tag">project · 20%</span></div>
             </li>
             <li class="sess">
               <span class="num">29</span>
               <div class="stitle">Final Project Presentation &amp; Evaluation</div>
-              <p class="sdesc">Continued final project presentations and evaluation.</p>
+              <p class="sdesc">Continued final project presentations and evaluation, with feedback from the
+                instructor and peers on each group's program.</p>
               <div class="tags"><span class="tag">project · 20%</span></div>
             </li>
             <li class="sess exam">
               <span class="num">30</span>
               <div class="stitle">Final Exam</div>
-              <p class="sdesc">Final written exam, consisting of multiple-choice and coding sections.</p>
+              <p class="sdesc">Final written exam covering the whole syllabus, consisting of multiple-choice
+                and coding sections.</p>
+              <p class="keyidea"><span class="kl">Assessment</span> &nbsp;The single largest component at 50%; the
+                June/July re-sit (if needed) is one comprehensive exam graded out of a maximum of 8.0.</p>
               <div class="tags"><span class="tag">assessment · 50%</span></div>
             </li>
           </ul>
         </div>
       </section>
 
+      <!-- KEY CONCEPTS / GLOSSARY -->
+      <section class="demo" id="glossary">
+        <h2>Key concepts</h2>
+        <p class="cap">A quick-reference glossary of the core terms used across the course, in roughly the order
+          they appear. Useful for revision before the midterms and final.</p>
+        <dl class="gloss">
+          <div><dt>Translation unit</dt><dd>A single <code>.c</code> file plus its included headers, compiled to one object file before linking.</dd></div>
+          <div><dt>Declaration vs definition</dt><dd>A declaration names a thing and its type; a definition also allocates/implements it.</dd></div>
+          <div><dt>Pointer</dt><dd>A typed variable holding a memory address; <code>*p</code> reads the value, <code>&amp;x</code> takes an address.</dd></div>
+          <div><dt>Dereference</dt><dd>Following a pointer with <code>*</code> to access the object it points to.</dd></div>
+          <div><dt>Pointer arithmetic</dt><dd>Adding to a pointer moves it by multiples of <code>sizeof</code> the pointed-to type.</dd></div>
+          <div><dt>Stack</dt><dd>Automatic storage for locals; freed automatically when a function returns.</dd></div>
+          <div><dt>Heap</dt><dd>Dynamic storage from <code>malloc</code>; lives until you <code>free</code> it.</dd></div>
+          <div><dt>Dangling pointer</dt><dd>A pointer to memory that has already been freed or gone out of scope.</dd></div>
+          <div><dt>Memory leak</dt><dd>Heap memory that is never freed, so it is lost for the program's lifetime.</dd></div>
+          <div><dt><code>struct</code></dt><dd>An aggregate type grouping named members laid out side by side in memory.</dd></div>
+          <div><dt><code>union</code></dt><dd>Members share one block of memory; only one is valid at a time.</dd></div>
+          <div><dt>Alignment / padding</dt><dd>Compiler-inserted gaps so members sit at addresses the CPU can access efficiently.</dd></div>
+          <div><dt>Assertion</dt><dd><code>assert(cond)</code> aborts when an invariant the programmer expects is false.</dd></div>
+          <div><dt>Unit test</dt><dd>An automated check pinning down a function's expected behaviour (here via GTest/ctest).</dd></div>
+          <div><dt>Preprocessor</dt><dd>A text-substitution pass (<code>#include</code>, <code>#define</code>) run before compilation.</dd></div>
+          <div><dt>Macro</dt><dd>A preprocessor-defined text expansion; no type checking, so parenthesise carefully.</dd></div>
+          <div><dt>Bitmask</dt><dd>An integer whose bits are tested/set/cleared with <code>&amp;</code>, <code>|</code>, <code>^</code>, <code>~</code>, shifts.</dd></div>
+          <div><dt>Two's complement</dt><dd>The standard binary representation of signed integers.</dd></div>
+          <div><dt><code>enum</code> / <code>typedef</code></dt><dd>Named integer constants; and aliases that simplify type names.</dd></div>
+          <div><dt>Linked list</dt><dd>A chain of heap nodes, each holding a value and a pointer to the next.</dd></div>
+          <div><dt>Recursion / base case</dt><dd>A function calling itself on a smaller input, stopped by a base case.</dd></div>
+          <div><dt>Backtracking</dt><dd>Recursion that makes a tentative choice and undoes it if it fails.</dd></div>
+          <div><dt>Thread</dt><dd>An independent flow of execution sharing the process's address space.</dd></div>
+          <div><dt>Race condition</dt><dd>A bug where the result depends on the unpredictable timing of concurrent access.</dd></div>
+          <div><dt>Mutex / critical section</dt><dd>A lock ensuring only one thread runs a protected region at a time.</dd></div>
+          <div><dt>Socket</dt><dd>A communication endpoint, used like a file descriptor, identified by address + port.</dd></div>
+          <div><dt>TCP vs UDP</dt><dd>Reliable ordered stream vs lightweight connectionless datagrams.</dd></div>
+          <div><dt>TLS / certificate</dt><dd>Encryption layer over TCP; a CA-signed certificate authenticates the server.</dd></div>
+        </dl>
+      </section>
+
       <!-- BIBLIOGRAPHY -->
       <section class="demo" id="biblio">
         <h2>Bibliography</h2>
-        <p class="cap">Compulsory readings.</p>
+        <p class="cap">Compulsory readings (all available digitally). Each entry notes which sessions it supports.</p>
         <ul class="biblio">
           <li>
             <div class="btitle">The C Programming Language <span class="tag read"></span></div>
-            <div class="bmeta">Brian W. Kernighan &amp; Dennis M. Ritchie · 2nd ed. · Prentice-Hall, 1988 · ISBN 0131103628</div>
+            <div class="bmeta">Brian W. Kernighan &amp; Dennis M. Ritchie · 2nd ed. · Prentice-Hall, 1988 · ISBN 0131103628 (Digital)</div>
             <div class="bnote">The definitive guide to C, written by the language's creators — the timeless
-              classic referenced throughout as "K&amp;R".</div>
+              classic referenced throughout as "K&amp;R" and the primary text for the core-language modules.</div>
+            <div class="bsess">supports sessions 1, 5–8, 10, 12–13 (Modules 0, 2, 3, 4)</div>
           </li>
           <li>
             <div class="btitle">Practical C Programming</div>
-            <div class="bmeta">Steve Oualline · 3rd ed. · O'Reilly, 1997 · ISBN 1565923065</div>
-            <div class="bnote">A hands-on guide emphasizing efficient, reliable and portable C, from basics
-              to advanced concepts ("PCP").</div>
+            <div class="bmeta">Steve Oualline · 3rd ed. · O'Reilly, 1997 · ISBN 1565923065 (Digital)</div>
+            <div class="bnote">A hands-on guide emphasizing efficient, reliable and portable C, from basics to
+              advanced concepts ("PCP") — strong on toolchain, debugging and bit-level work.</div>
+            <div class="bsess">supports sessions 2–3, 11 (tooling, debugging, bit manipulation)</div>
           </li>
           <li>
             <div class="btitle">Hands-On Network Programming with C</div>
-            <div class="bmeta">Lewis Van Winkle · Packt Publishing, 2019 · ISBN 9781789349863</div>
-            <div class="bnote">Socket programming in C; writing secure and optimized network code ("HNP").</div>
+            <div class="bmeta">Lewis Van Winkle · Packt Publishing, 2019 · ISBN 9781789349863 (Digital)</div>
+            <div class="bnote">Socket programming in C; writing secure and optimized network code ("HNP") — the
+              reference for the entire networking module.</div>
+            <div class="bsess">supports sessions 17–19, 21 (Module 6: sockets, TCP/UDP, TLS, applications)</div>
           </li>
         </ul>
       </section>
