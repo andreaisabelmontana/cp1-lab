@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#4338CA" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>cp1-lab · worked example project — a command-line contact manager in C</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="./style.css" />
+
+    <style>
+      /* ---- project.html: layout + code blocks, built only on existing :root tokens ---- */
+      .lead { color: var(--ink-soft); font-size: 0.92rem; max-width: 74ch; }
+      .lead + .lead { margin-top: 0.6rem; }
+      .lead code, p code, li code, td code { font-family: var(--font-mono); font-size: 0.84em; color: var(--accent); background: var(--accent-soft); padding: 0.05em 0.35em; border-radius: 3px; }
+
+      /* meta grid (mirrors course.html) */
+      .meta-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+        gap: 0.6rem; margin-top: 0.7rem;
+      }
+      .meta-cell {
+        border: 1px solid var(--rule); border-radius: 6px;
+        padding: 0.55rem 0.7rem; background: #FBFBFD;
+      }
+      .meta-cell .k { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      .meta-cell .v { color: var(--ink); font-weight: 700; font-size: 0.9rem; margin-top: 0.15rem; }
+      .meta-cell .v.mono { font-family: var(--font-mono); }
+
+      /* step heading */
+      .step { margin-top: 1.4rem; }
+      .step:first-of-type { margin-top: 0.6rem; }
+      .step-head {
+        display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap;
+        padding-bottom: 0.4rem; border-bottom: 1px solid var(--rule-h);
+      }
+      .step-tag {
+        font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+        color: var(--accent); background: var(--accent-soft);
+        padding: 0.15em 0.55em; border-radius: 4px; white-space: nowrap;
+      }
+      .step-head h3 { font-size: 0.98rem; font-weight: 700; margin: 0; color: var(--ink); letter-spacing: -0.01em; }
+      .step p { color: var(--ink-soft); font-size: 0.88rem; max-width: 78ch; }
+
+      /* CODE BLOCK — scoped to this page */
+      pre.codeblock {
+        font-family: var(--font-mono); font-size: 0.79rem; line-height: 1.55;
+        background: #FBFBFD; border: 1px solid var(--rule); border-radius: 6px;
+        padding: 0.85rem 1rem; margin: 0.7rem 0 0; overflow-x: auto;
+        color: var(--ink); tab-size: 4;
+      }
+      pre.codeblock .cm { color: var(--muted); font-style: italic; }
+      pre.codeblock .kw { color: var(--accent); font-weight: 600; }
+      pre.codeblock .pp { color: var(--good); }
+      pre.codeblock .st { color: var(--warn); }
+      pre.codeblock .fn { color: var(--ink); font-weight: 600; }
+      .filename {
+        font-family: var(--font-mono); font-size: 0.74rem; font-weight: 600;
+        color: var(--muted); margin: 0.7rem 0 0;
+      }
+      .filename::before { content: '\1F4C4\00A0'; }
+
+      /* terminal transcript */
+      pre.term {
+        font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.5;
+        background: #15151A; color: #E8E8EC; border: 1px solid var(--ink);
+        border-radius: 6px; padding: 0.85rem 1rem; margin: 0.7rem 0 0;
+        overflow-x: auto; tab-size: 4;
+      }
+      pre.term .pr { color: #7DD3FC; }
+      pre.term .in { color: #FDE68A; }
+      pre.term .ok { color: #86EFAC; }
+      pre.term .cm { color: #9CA3AF; }
+
+      /* generic note / callout */
+      .note {
+        border-left: 2px solid var(--accent); background: var(--accent-soft);
+        padding: 0.6rem 0.85rem; border-radius: 0 6px 6px 0; margin-top: 0.8rem;
+        font-size: 0.85rem; color: var(--ink-soft);
+      }
+      .note strong { color: var(--ink); }
+      .note.warn { border-left-color: var(--bad); background: rgba(220,38,38,0.07); }
+
+      /* objectives / outcomes list (mirrors course.html) */
+      .obj { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; gap: 0.45rem; }
+      .obj li { position: relative; padding-left: 1.4rem; color: var(--ink-soft); font-size: 0.88rem; }
+      .obj li::before { content: ''; position: absolute; left: 0; top: 0.45em; width: 8px; height: 8px; border-radius: 2px; background: var(--accent); }
+
+      .outcomes { list-style: none; margin: 0.5rem 0 0.2rem; padding: 0; display: grid; gap: 0.45rem; }
+      .outcomes li { position: relative; padding-left: 1.3rem; color: var(--ink-soft); font-size: 0.86rem; }
+      .outcomes li::before { content: '\2713'; position: absolute; left: 0; top: 0; color: var(--good); font-weight: 700; }
+      .outcomes li strong { color: var(--ink); }
+
+      /* tags row (mirrors course.html demo tags) */
+      .tags { margin-top: 0.6rem; display: flex; gap: 0.35rem; flex-wrap: wrap; }
+      .tag {
+        font-size: 0.7rem; font-weight: 500; color: var(--ink-soft);
+        border: 1px solid var(--rule-h); border-radius: 999px; padding: 0.1em 0.6em;
+        background: #FBFBFD;
+      }
+      .tag.demo { color: var(--accent); border-color: var(--accent); }
+      .tag.demo a { color: var(--accent); border-bottom: none; }
+      .tag.demo a:hover { border-bottom: none; text-decoration: underline; }
+      .tag.sess { font-family: var(--font-mono); }
+
+      /* mapping table */
+      .map { width: 100%; border-collapse: collapse; margin-top: 0.6rem; font-size: 0.84rem; }
+      .map th, .map td { text-align: left; padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+      .map th { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+      .map td:first-child { font-weight: 600; color: var(--ink); white-space: nowrap; }
+      .map tr:last-child td { border-bottom: none; }
+
+      /* module breakdown cards */
+      .mods { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.7rem; margin-top: 0.7rem; }
+      .mod {
+        border: 1px solid var(--rule); border-radius: 6px; padding: 0.65rem 0.8rem; background: var(--paper);
+      }
+      .mod .mname { font-family: var(--font-mono); font-weight: 600; font-size: 0.82rem; color: var(--accent); }
+      .mod .mdesc { color: var(--ink-soft); font-size: 0.8rem; margin-top: 0.25rem; }
+
+      /* biblio (mirrors course.html) */
+      .biblio { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; gap: 0.7rem; }
+      .biblio li { padding-left: 0.9rem; border-left: 2px solid var(--accent); }
+      .biblio .btitle { font-weight: 600; color: var(--ink); }
+      .biblio .bmeta { color: var(--muted); font-size: 0.8rem; }
+      .biblio .bnote { color: var(--ink-soft); font-size: 0.82rem; margin-top: 0.2rem; }
+
+      .toc { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.7rem; }
+      .toc a {
+        font-size: 0.78rem; color: var(--ink-soft); border: 1px solid var(--rule-h);
+        border-radius: 999px; padding: 0.15em 0.7em; background: #FBFBFD;
+      }
+      .toc a:hover { color: var(--accent); border-color: var(--accent); }
+
+      .ascii { color: var(--ink-soft); }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <span class="dot"></span><strong>cp1-lab</strong>
+        <span class="sub">worked example · a contact manager in C</span>
+      </div>
+      <nav>
+        <a href="./index.html">&larr; interactive demos</a>
+        <a href="./course.html">course outline</a>
+        <a href="#overview">overview</a>
+        <a href="#design">design</a>
+        <a href="#build">implementation</a>
+        <a href="#results">results</a>
+        <a href="#safety">memory safety</a>
+        <a href="#outcomes">outcomes</a>
+        <a href="#extend">extensions</a>
+        <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- 1. OVERVIEW ------------------------------------------------------ -->
+      <section class="demo" id="overview">
+        <h2>Worked example project — a command-line contact manager in C</h2>
+        <p class="lead">This page walks through <strong>one complete, compilable C program</strong> from an empty
+          file to a working tool. It is the kind of moderately-complex program the syllabus asks each group to build
+          for the <em>Group Project</em> (20% of the grade): a <strong>command-line contact / inventory manager</strong>
+          that stores records of people, lets you add, list, search and delete them, and saves everything to a CSV file
+          on disk so the data survives between runs.</p>
+        <p class="lead">Although small, it deliberately exercises the heart of the course: <code>struct</code> records,
+          <code>typedef</code>, pointers, <strong>dynamic memory</strong> (<code>malloc</code> / <code>realloc</code> /
+          <code>free</code>) backed by a growable array, file I/O for save &amp; load, careful input validation, and a
+          menu-driven main loop. Every snippet below is real C — copy them in order into one file and it compiles and
+          runs. The companion <a href="./index.html">interactive demos</a> animate the underlying ideas; the
+          <a href="./course.html">course outline</a> maps each one to a session.</p>
+
+        <div class="meta-grid">
+          <div class="meta-cell"><div class="k">language</div><div class="v mono">C (C11)</div></div>
+          <div class="meta-cell"><div class="k">lines of code</div><div class="v mono">~260</div></div>
+          <div class="meta-cell"><div class="k">build</div><div class="v mono">gcc</div></div>
+          <div class="meta-cell"><div class="k">data store</div><div class="v mono">dynamic array</div></div>
+          <div class="meta-cell"><div class="k">persistence</div><div class="v mono">CSV file</div></div>
+          <div class="meta-cell"><div class="k">maps to</div><div class="v mono">Modules 0–4</div></div>
+        </div>
+
+        <p class="filename" style="margin-top:1rem">build &amp; run (one translation unit, no external libraries)</p>
+        <pre class="codeblock"><span class="cm"># compile with all warnings on — treat them as errors while learning</span>
+gcc -std=c11 -Wall -Wextra -O2 -o contacts contacts.c
+
+<span class="cm"># run it</span>
+./contacts
+
+<span class="cm"># (optional) check for leaks &amp; invalid memory use under valgrind</span>
+valgrind --leak-check=full ./contacts</pre>
+
+        <p class="lead" style="margin-top:1rem">Sessions / modules this project exercises:</p>
+        <div class="toc">
+          <a href="./course.html#program">Module 0 — C basics &amp; I/O</a>
+          <a href="./course.html#program">Module 2 — pointers</a>
+          <a href="./course.html#program">Module 2 — dynamic memory</a>
+          <a href="./course.html#program">Module 2 — structs</a>
+          <a href="./course.html#program">Module 3 — file I/O</a>
+          <a href="./course.html#program">Module 4 — linked lists / arrays</a>
+        </div>
+      </section>
+
+      <!-- 2. DESIGN ------------------------------------------------------- -->
+      <section class="demo" id="design">
+        <h2>1 · Design — the data model</h2>
+        <p class="lead">Before writing code we decide <em>what a record is</em> and <em>where records live</em>.
+          A contact is a small bundle of related fields, which is exactly what a <code>struct</code> is for
+          (see the <a href="./index.html#struct">structs &amp; memory layout</a> demo). The whole collection lives in a
+          <strong>dynamic array</strong>: a single <code>malloc</code>'d block of <code>Contact</code> values plus two
+          integers — how many slots are used and how many are allocated. When it fills up we <code>realloc</code> to a
+          bigger block. This gives us O(1) append and contiguous, cache-friendly storage, in contrast to the pointer
+          chasing of a <a href="./index.html#list">linked list</a>.</p>
+
+        <p class="filename">the record and the store (top of contacts.c)</p>
+        <pre class="codeblock"><span class="pp">#include</span> <span class="st">&lt;stdio.h&gt;</span>
+<span class="pp">#include</span> <span class="st">&lt;stdlib.h&gt;</span>
+<span class="pp">#include</span> <span class="st">&lt;string.h&gt;</span>
+
+<span class="pp">#define</span> NAME_LEN  64
+<span class="pp">#define</span> EMAIL_LEN 96
+<span class="pp">#define</span> LINE_LEN  256
+
+<span class="cm">/* One contact record. Fixed-size char arrays keep each record a flat,
+   copyable value — no inner pointers to free, which simplifies memory. */</span>
+<span class="kw">typedef</span> <span class="kw">struct</span> {
+    <span class="kw">int</span>  id;                 <span class="cm">/* unique, assigned on insert      */</span>
+    <span class="kw">char</span> name[NAME_LEN];      <span class="cm">/* "Ada Lovelace"                  */</span>
+    <span class="kw">char</span> email[EMAIL_LEN];     <span class="cm">/* "ada@analytical.engine"         */</span>
+    <span class="kw">int</span>  age;
+} Contact;
+
+<span class="cm">/* The dynamic store: a growable array of Contact values.
+   `count` is how many are in use; `capacity` is how many fit before
+   we must grow. `items` is the malloc'd block (NULL when empty). */</span>
+<span class="kw">typedef</span> <span class="kw">struct</span> {
+    Contact *items;
+    <span class="kw">size_t</span>   count;
+    <span class="kw">size_t</span>   capacity;
+    <span class="kw">int</span>      next_id;           <span class="cm">/* monotonically increasing id source */</span>
+} Book;</pre>
+
+        <p class="lead" style="margin-top:1rem"><strong>Module breakdown.</strong> The program is organised into small
+          single-purpose functions, grouped by responsibility — the same decomposition the syllabus asks groups to
+          plan and divide among members:</p>
+        <div class="mods">
+          <div class="mod"><div class="mname">store</div><div class="mdesc">book_init, book_reserve, book_add, book_free — own the dynamic array and its growth.</div></div>
+          <div class="mod"><div class="mname">queries</div><div class="mdesc">book_find, book_list, book_delete — search and mutate by id.</div></div>
+          <div class="mod"><div class="mname">persistence</div><div class="mdesc">book_save, book_load — serialise to / from a CSV file.</div></div>
+          <div class="mod"><div class="mname">input</div><div class="mdesc">read_line, read_int — validated, overflow-safe console input.</div></div>
+          <div class="mod"><div class="mname">ui</div><div class="mdesc">menu + main — the interactive loop that ties it together.</div></div>
+        </div>
+      </section>
+
+      <!-- 3. IMPLEMENTATION ----------------------------------------------- -->
+      <section class="demo" id="build">
+        <h2>2 · Step-by-step implementation</h2>
+        <p class="lead">We build bottom-up: first the store and its memory management, then queries, then validated
+          input, then file I/O, and finally the menu loop that calls everything.</p>
+
+        <!-- STEP A -->
+        <div class="step">
+          <div class="step-head"><span class="step-tag">step 1</span><h3>The dynamic array: init, grow, append, free</h3></div>
+          <p>The store starts empty (<code>items == NULL</code>). <code>book_reserve</code> is the one place that
+            calls <code>realloc</code>: it doubles the capacity (starting at 4) only when the array is full, so a run
+            of <em>n</em> appends costs O(n) total. We always assign <code>realloc</code>'s result to a
+            <em>temporary</em> first — if it returns <code>NULL</code> the original block is still valid and we have not
+            leaked it. This is the dynamic-memory pattern from
+            <a href="./course.html#program">Module 2, Session 6</a>.</p>
+
+          <p class="filename">contacts.c — store</p>
+          <pre class="codeblock"><span class="kw">void</span> <span class="fn">book_init</span>(Book *b) {
+    b-&gt;items    = NULL;
+    b-&gt;count    = 0;
+    b-&gt;capacity = 0;
+    b-&gt;next_id  = 1;
+}
+
+<span class="cm">/* Ensure room for at least `need` items. Returns 1 on success, 0 on
+   allocation failure (leaving the existing buffer untouched). */</span>
+<span class="kw">int</span> <span class="fn">book_reserve</span>(Book *b, <span class="kw">size_t</span> need) {
+    <span class="kw">if</span> (need &lt;= b-&gt;capacity) <span class="kw">return</span> 1;          <span class="cm">/* already big enough */</span>
+
+    <span class="kw">size_t</span> new_cap = b-&gt;capacity ? b-&gt;capacity : 4;
+    <span class="kw">while</span> (new_cap &lt; need) new_cap *= 2;          <span class="cm">/* grow geometrically */</span>
+
+    <span class="cm">/* realloc into a TEMP so we don't lose the old pointer on failure */</span>
+    Contact *tmp = realloc(b-&gt;items, new_cap * <span class="kw">sizeof</span>(Contact));
+    <span class="kw">if</span> (tmp == NULL) {
+        fprintf(stderr, <span class="st">"out of memory (wanted %zu slots)\n"</span>, new_cap);
+        <span class="kw">return</span> 0;
+    }
+    b-&gt;items    = tmp;
+    b-&gt;capacity = new_cap;
+    <span class="kw">return</span> 1;
+}
+
+<span class="cm">/* Append a copy of `c`, assigning it the next free id.
+   Returns the new id, or -1 if the store could not grow. */</span>
+<span class="kw">int</span> <span class="fn">book_add</span>(Book *b, Contact c) {
+    <span class="kw">if</span> (!book_reserve(b, b-&gt;count + 1)) <span class="kw">return</span> -1;
+    c.id = b-&gt;next_id++;
+    b-&gt;items[b-&gt;count++] = c;                     <span class="cm">/* struct copy into the slot */</span>
+    <span class="kw">return</span> c.id;
+}
+
+<span class="cm">/* Release the whole block and reset to the empty state. Calling
+   book_free twice is safe because we NULL the pointer afterwards. */</span>
+<span class="kw">void</span> <span class="fn">book_free</span>(Book *b) {
+    free(b-&gt;items);
+    b-&gt;items    = NULL;
+    b-&gt;count    = 0;
+    b-&gt;capacity = 0;
+}</pre>
+        </div>
+
+        <!-- STEP B -->
+        <div class="step">
+          <div class="step-head"><span class="step-tag">step 2</span><h3>Queries: find, list, delete</h3></div>
+          <p><code>book_find</code> returns a <strong>pointer</strong> to the matching record (or <code>NULL</code>),
+            so the caller can read or edit it in place — a direct use of the
+            <a href="./index.html#ptr">pointers &amp; memory</a> idea that a pointer is just an address into the array.
+            <code>book_delete</code> removes by id while keeping the array contiguous: it shifts the tail down with
+            <code>memmove</code> rather than leaving a hole. Order is not preserved guarantees here — we keep it simple
+            and stable by shifting.</p>
+
+          <p class="filename">contacts.c — queries</p>
+          <pre class="codeblock"><span class="cm">/* Linear scan for an id. Returns a pointer INTO the array (do not free
+   it) or NULL if absent. See the linear-vs-binary search demo. */</span>
+Contact *<span class="fn">book_find</span>(Book *b, <span class="kw">int</span> id) {
+    <span class="kw">for</span> (<span class="kw">size_t</span> i = 0; i &lt; b-&gt;count; i++)
+        <span class="kw">if</span> (b-&gt;items[i].id == id)
+            <span class="kw">return</span> &amp;b-&gt;items[i];
+    <span class="kw">return</span> NULL;
+}
+
+<span class="kw">void</span> <span class="fn">book_list</span>(<span class="kw">const</span> Book *b) {
+    <span class="kw">if</span> (b-&gt;count == 0) { puts(<span class="st">"  (no contacts yet)"</span>); <span class="kw">return</span>; }
+    printf(<span class="st">"  %-4s %-22s %-28s %s\n"</span>, <span class="st">"ID"</span>, <span class="st">"NAME"</span>, <span class="st">"EMAIL"</span>, <span class="st">"AGE"</span>);
+    <span class="kw">for</span> (<span class="kw">size_t</span> i = 0; i &lt; b-&gt;count; i++) {
+        <span class="kw">const</span> Contact *c = &amp;b-&gt;items[i];
+        printf(<span class="st">"  %-4d %-22s %-28s %d\n"</span>, c-&gt;id, c-&gt;name, c-&gt;email, c-&gt;age);
+    }
+}
+
+<span class="cm">/* Delete by id. Returns 1 if a record was removed, else 0. Closes the
+   gap with memmove so the array stays contiguous (no tombstones). */</span>
+<span class="kw">int</span> <span class="fn">book_delete</span>(Book *b, <span class="kw">int</span> id) {
+    <span class="kw">for</span> (<span class="kw">size_t</span> i = 0; i &lt; b-&gt;count; i++) {
+        <span class="kw">if</span> (b-&gt;items[i].id == id) {
+            <span class="kw">size_t</span> tail = b-&gt;count - i - 1;       <span class="cm">/* items after i */</span>
+            memmove(&amp;b-&gt;items[i], &amp;b-&gt;items[i + 1],
+                    tail * <span class="kw">sizeof</span>(Contact));
+            b-&gt;count--;
+            <span class="kw">return</span> 1;
+        }
+    }
+    <span class="kw">return</span> 0;
+}</pre>
+        </div>
+
+        <!-- STEP C -->
+        <div class="step">
+          <div class="step-head"><span class="step-tag">step 3</span><h3>Safe console input (validation)</h3></div>
+          <p>The classic beginner bug is mixing <code>scanf("%d")</code> with <code>fgets</code> and leaving a stray
+            newline in the buffer. We avoid it by reading <em>whole lines</em> with <code>fgets</code> and parsing them
+            ourselves. <code>read_line</code> also strips the trailing <code>'\n'</code> and rejects empty input;
+            <code>read_int</code> uses <code>strtol</code> so we can detect non-numeric junk and out-of-range values
+            instead of silently accepting them.</p>
+
+          <p class="filename">contacts.c — input</p>
+          <pre class="codeblock"><span class="cm">/* Read a trimmed, non-empty line into `buf` (size `cap`). Returns 1 on
+   success, 0 on EOF. Extra characters beyond the buffer are discarded. */</span>
+<span class="kw">int</span> <span class="fn">read_line</span>(<span class="kw">const</span> <span class="kw">char</span> *prompt, <span class="kw">char</span> *buf, <span class="kw">size_t</span> cap) {
+    printf(<span class="st">"%s"</span>, prompt);
+    <span class="kw">if</span> (fgets(buf, (<span class="kw">int</span>)cap, stdin) == NULL) <span class="kw">return</span> 0;   <span class="cm">/* EOF / error */</span>
+
+    <span class="kw">size_t</span> len = strlen(buf);
+    <span class="kw">if</span> (len &gt; 0 &amp;&amp; buf[len - 1] == <span class="st">'\n'</span>) {
+        buf[len - 1] = <span class="st">'\0'</span>;                       <span class="cm">/* chop the newline */</span>
+    } <span class="kw">else</span> {
+        <span class="kw">int</span> ch;                                    <span class="cm">/* line too long: flush rest */</span>
+        <span class="kw">while</span> ((ch = getchar()) != <span class="st">'\n'</span> &amp;&amp; ch != EOF) { }
+    }
+    <span class="kw">return</span> buf[0] != <span class="st">'\0'</span>;                        <span class="cm">/* reject empty input */</span>
+}
+
+<span class="cm">/* Read an integer in [lo, hi]. Re-prompts until valid or EOF (-> def). */</span>
+<span class="kw">int</span> <span class="fn">read_int</span>(<span class="kw">const</span> <span class="kw">char</span> *prompt, <span class="kw">int</span> lo, <span class="kw">int</span> hi, <span class="kw">int</span> def) {
+    <span class="kw">char</span> buf[LINE_LEN];
+    <span class="kw">while</span> (read_line(prompt, buf, <span class="kw">sizeof</span> buf)) {
+        <span class="kw">char</span> *end;
+        <span class="kw">long</span> v = strtol(buf, &amp;end, 10);
+        <span class="kw">if</span> (end != buf &amp;&amp; *end == <span class="st">'\0'</span> &amp;&amp; v &gt;= lo &amp;&amp; v &lt;= hi)
+            <span class="kw">return</span> (<span class="kw">int</span>)v;
+        printf(<span class="st">"  please enter a whole number %d..%d\n"</span>, lo, hi);
+    }
+    <span class="kw">return</span> def;                                    <span class="cm">/* EOF: fall back to default */</span>
+}</pre>
+        </div>
+
+        <!-- STEP D -->
+        <div class="step">
+          <div class="step-head"><span class="step-tag">step 4</span><h3>Persistence: save &amp; load a CSV file</h3></div>
+          <p>This is <a href="./course.html#program">Module 3, Session 8</a> in action — opening files, checking the
+            <code>FILE*</code> for <code>NULL</code>, and always <code>fclose</code>-ing. We pick a simple line
+            format: one record per line, fields separated by commas. Saving is a straightforward loop; loading rebuilds
+            the store with the same <code>book_add</code> path so growth and ids are handled for free. Note we re-derive
+            <code>next_id</code> so saved ids are not reused.</p>
+
+          <p class="filename">contacts.c — persistence</p>
+          <pre class="codeblock"><span class="cm">/* Write the whole book to `path` as CSV. Returns 1 on success.
+   NOTE: this simple format assumes names/emails contain no commas. */</span>
+<span class="kw">int</span> <span class="fn">book_save</span>(<span class="kw">const</span> Book *b, <span class="kw">const</span> <span class="kw">char</span> *path) {
+    FILE *f = fopen(path, <span class="st">"w"</span>);
+    <span class="kw">if</span> (f == NULL) { perror(path); <span class="kw">return</span> 0; }   <span class="cm">/* check the handle! */</span>
+
+    <span class="kw">for</span> (<span class="kw">size_t</span> i = 0; i &lt; b-&gt;count; i++) {
+        <span class="kw">const</span> Contact *c = &amp;b-&gt;items[i];
+        fprintf(f, <span class="st">"%d,%s,%s,%d\n"</span>, c-&gt;id, c-&gt;name, c-&gt;email, c-&gt;age);
+    }
+    fclose(f);                                    <span class="cm">/* release the OS resource */</span>
+    <span class="kw">return</span> 1;
+}
+
+<span class="cm">/* Load records from `path` into an already-initialised book. A missing
+   file is not an error (first run) — returns 1 with an empty book. */</span>
+<span class="kw">int</span> <span class="fn">book_load</span>(Book *b, <span class="kw">const</span> <span class="kw">char</span> *path) {
+    FILE *f = fopen(path, <span class="st">"r"</span>);
+    <span class="kw">if</span> (f == NULL) <span class="kw">return</span> 1;                     <span class="cm">/* no file yet: fine */</span>
+
+    <span class="kw">char</span> line[LINE_LEN];
+    <span class="kw">int</span> max_id = 0;
+    <span class="kw">while</span> (fgets(line, <span class="kw">sizeof</span> line, f)) {
+        Contact c = {0};
+        <span class="cm">/* %[^,] reads up to the next comma; widths guard the buffers */</span>
+        <span class="kw">int</span> n = sscanf(line, <span class="st">"%d,%63[^,],%95[^,],%d"</span>,
+                       &amp;c.id, c.name, c.email, &amp;c.age);
+        <span class="kw">if</span> (n == 4) {
+            book_reserve(b, b-&gt;count + 1);
+            b-&gt;items[b-&gt;count++] = c;
+            <span class="kw">if</span> (c.id &gt; max_id) max_id = c.id;
+        }
+    }
+    fclose(f);
+    b-&gt;next_id = max_id + 1;                       <span class="cm">/* don't reuse loaded ids */</span>
+    <span class="kw">return</span> 1;
+}</pre>
+        </div>
+
+        <!-- STEP E -->
+        <div class="step">
+          <div class="step-head"><span class="step-tag">step 5</span><h3>The menu loop &amp; main</h3></div>
+          <p>Finally the <strong>menu loop</strong>: print options, read a choice with the validated
+            <code>read_int</code>, dispatch with a <code>switch</code>, and repeat until the user quits. <code>main</code>
+            owns the single <code>Book</code> on the stack, loads any saved data at start, and — crucially —
+            <code>book_save</code> + <code>book_free</code> on the way out so there are no leaks and the data persists.</p>
+
+          <p class="filename">contacts.c — ui + main</p>
+          <pre class="codeblock"><span class="pp">#define</span> DB_PATH <span class="st">"contacts.csv"</span>
+
+<span class="kw">void</span> <span class="fn">do_add</span>(Book *b) {
+    Contact c = {0};
+    <span class="kw">if</span> (!read_line(<span class="st">"  name : "</span>, c.name,  <span class="kw">sizeof</span> c.name))  <span class="kw">return</span>;
+    <span class="kw">if</span> (!read_line(<span class="st">"  email: "</span>, c.email, <span class="kw">sizeof</span> c.email)) <span class="kw">return</span>;
+    c.age = read_int(<span class="st">"  age  : "</span>, 0, 150, 0);
+    <span class="kw">int</span> id = book_add(b, c);
+    <span class="kw">if</span> (id &lt; 0) puts(<span class="st">"  could not add (out of memory)"</span>);
+    <span class="kw">else</span>        printf(<span class="st">"  added contact #%d\n"</span>, id);
+}
+
+<span class="kw">void</span> <span class="fn">do_find</span>(Book *b) {
+    <span class="kw">int</span> id = read_int(<span class="st">"  id to find: "</span>, 1, 1000000, -1);
+    Contact *c = book_find(b, id);
+    <span class="kw">if</span> (c) printf(<span class="st">"  #%d  %s &lt;%s&gt;  age %d\n"</span>, c-&gt;id, c-&gt;name, c-&gt;email, c-&gt;age);
+    <span class="kw">else</span>   puts(<span class="st">"  no contact with that id"</span>);
+}
+
+<span class="kw">void</span> <span class="fn">menu</span>(<span class="kw">void</span>) {
+    puts(<span class="st">"\n=== contact manager ==="</span>);
+    puts(<span class="st">"  1) add     2) list    3) find"</span>);
+    puts(<span class="st">"  4) delete  5) save    0) quit"</span>);
+}
+
+<span class="kw">int</span> <span class="fn">main</span>(<span class="kw">void</span>) {
+    Book book;
+    book_init(&amp;book);
+    book_load(&amp;book, DB_PATH);
+    printf(<span class="st">"loaded %zu contact(s) from %s\n"</span>, book.count, DB_PATH);
+
+    <span class="kw">int</span> running = 1;
+    <span class="kw">while</span> (running) {
+        menu();
+        <span class="kw">int</span> choice = read_int(<span class="st">"  &gt; "</span>, 0, 5, 0);
+        <span class="kw">switch</span> (choice) {
+            <span class="kw">case</span> 1: do_add(&amp;book); <span class="kw">break</span>;
+            <span class="kw">case</span> 2: book_list(&amp;book); <span class="kw">break</span>;
+            <span class="kw">case</span> 3: do_find(&amp;book); <span class="kw">break</span>;
+            <span class="kw">case</span> 4: {
+                <span class="kw">int</span> id = read_int(<span class="st">"  id to delete: "</span>, 1, 1000000, -1);
+                puts(book_delete(&amp;book, id) ? <span class="st">"  deleted"</span> : <span class="st">"  not found"</span>);
+                <span class="kw">break</span>;
+            }
+            <span class="kw">case</span> 5:
+                <span class="kw">if</span> (book_save(&amp;book, DB_PATH))
+                    printf(<span class="st">"  saved %zu contact(s)\n"</span>, book.count);
+                <span class="kw">break</span>;
+            <span class="kw">case</span> 0: running = 0; <span class="kw">break</span>;
+        }
+    }
+
+    book_save(&amp;book, DB_PATH);                     <span class="cm">/* persist on exit  */</span>
+    book_free(&amp;book);                              <span class="cm">/* free the buffer  */</span>
+    puts(<span class="st">"bye."</span>);
+    <span class="kw">return</span> 0;
+}</pre>
+          <div class="note"><strong>Compiles clean.</strong> With <code>gcc -std=c11 -Wall -Wextra</code> the five steps
+            above form a complete program with no warnings. Paste them into <code>contacts.c</code> in the order shown
+            (store → queries → input → persistence → ui/main).</div>
+        </div>
+      </section>
+
+      <!-- 4. RESULTS ------------------------------------------------------ -->
+      <section class="demo" id="results">
+        <h2>3 · Results — a sample run</h2>
+        <p class="lead">A full terminal session: we start with no data file, add two contacts, list them, look one up,
+          delete one, save, and quit. On the second run the saved contact is loaded back automatically — proving
+          persistence works.</p>
+
+        <pre class="term"><span class="pr">$</span> <span class="in">gcc -std=c11 -Wall -Wextra -O2 -o contacts contacts.c</span>
+<span class="pr">$</span> <span class="in">./contacts</span>
+loaded 0 contact(s) from contacts.csv
+
+=== contact manager ===
+  1) add     2) list    3) find
+  4) delete  5) save    0) quit
+  &gt; <span class="in">1</span>
+  name : <span class="in">Ada Lovelace</span>
+  email: <span class="in">ada@analytical.engine</span>
+  age  : <span class="in">36</span>
+  <span class="ok">added contact #1</span>
+
+=== contact manager ===
+  ...
+  &gt; <span class="in">1</span>
+  name : <span class="in">Alan Turing</span>
+  email: <span class="in">alan@bombe.uk</span>
+  age  : <span class="in">41</span>
+  <span class="ok">added contact #2</span>
+
+=== contact manager ===
+  ...
+  &gt; <span class="in">2</span>
+  ID   NAME                   EMAIL                        AGE
+  1    Ada Lovelace           ada@analytical.engine        36
+  2    Alan Turing            alan@bombe.uk                41
+
+  &gt; <span class="in">3</span>
+  id to find: <span class="in">2</span>
+  #2  Alan Turing &lt;alan@bombe.uk&gt;  age 41
+
+  &gt; <span class="in">4</span>
+  id to delete: <span class="in">1</span>
+  <span class="ok">deleted</span>
+
+  &gt; <span class="in">5</span>
+  <span class="ok">saved 1 contact(s)</span>
+
+  &gt; <span class="in">0</span>
+bye.
+
+<span class="cm"># second run — data survived on disk:</span>
+<span class="pr">$</span> <span class="in">./contacts</span>
+loaded 1 contact(s) from contacts.csv
+  &gt; <span class="in">2</span>
+  ID   NAME                   EMAIL                        AGE
+  2    Alan Turing            alan@bombe.uk                41
+
+<span class="cm"># the CSV file on disk:</span>
+<span class="pr">$</span> <span class="in">cat contacts.csv</span>
+2,Alan Turing,alan@bombe.uk,41</pre>
+      </section>
+
+      <!-- 5. MEMORY SAFETY ------------------------------------------------ -->
+      <section class="demo" id="safety">
+        <h2>4 · Memory-safety notes</h2>
+        <p class="lead">Most "mysterious" C bugs are memory bugs. This project follows a handful of rules that, applied
+          consistently, eliminate the common ones — the discipline emphasised across
+          <a href="./course.html#program">Module 2</a>.</p>
+        <ul class="outcomes">
+          <li><strong>Every <code>malloc</code>/<code>realloc</code> is paired with a <code>free</code>.</strong>
+            The store owns exactly one block; <code>book_free</code> releases it and <code>main</code> always calls it
+            before returning. Run under <code>valgrind --leak-check=full</code> → <em>"All heap blocks were freed".</em></li>
+          <li><strong><code>realloc</code> into a temporary.</strong> <code>book_reserve</code> never overwrites
+            <code>b-&gt;items</code> with <code>realloc</code>'s result directly — if it returned <code>NULL</code> the old
+            block would leak. We assign to <code>tmp</code> first, check it, then commit.</li>
+          <li><strong>Check every resource handle.</strong> <code>fopen</code> can return <code>NULL</code>; we test it
+            (and use <code>perror</code>) before reading or writing, and a missing file on load is treated as an empty
+            book rather than a crash.</li>
+          <li><strong>Bounded string input.</strong> <code>fgets</code> takes the buffer size; <code>sscanf</code> uses
+            field-width limits (<code>%63[^,]</code>, <code>%95[^,]</code>) that match the array sizes, so a long token
+            can never overrun <code>name</code> or <code>email</code>.</li>
+          <li><strong>No dangling pointers.</strong> <code>book_find</code> returns a pointer <em>into</em> the array;
+            callers use it immediately and never hold it across an <code>add</code> (which may <code>realloc</code> and
+            move the block). <code>book_free</code> NULLs the pointer so a stray double-free is harmless.</li>
+          <li><strong>Zero-initialise records</strong> with <code>Contact c = {0};</code> so unset fields are never
+            read as garbage.</li>
+        </ul>
+        <div class="note warn"><strong>Known simplification.</strong> The CSV format assumes names and emails contain no
+          commas or newlines. A production version would quote/escape fields (see <em>Extensions</em>). This is exactly
+          the kind of limitation the syllabus asks groups to document.</div>
+      </section>
+
+      <!-- 6. LEARNING OUTCOMES -------------------------------------------- -->
+      <section class="demo" id="outcomes">
+        <h2>5 · Mapping to learning outcomes</h2>
+        <p class="lead">How each part of the project lands on the syllabus modules and the matching interactive demo:</p>
+        <table class="map">
+          <thead>
+            <tr><th>Project feature</th><th>Syllabus module / session</th><th>Demo</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>menu loop, printf/scanf, control flow</td><td>Module 0 — C basics &amp; I/O (S1–2)</td>
+              <td><a href="./index.html#trace">variable tracing</a>, <a href="./index.html#loop">loops</a></td></tr>
+            <tr><td>book_find returns a pointer into the array</td><td>Module 2 — Pointers (S5)</td>
+              <td><a href="./index.html#ptr">pointers &amp; memory</a></td></tr>
+            <tr><td>malloc / realloc / free, growable buffer</td><td>Module 2 — Dynamic Memory (S6)</td>
+              <td><a href="./index.html#ptr">pointers &amp; memory</a></td></tr>
+            <tr><td>Contact &amp; Book structs, typedef</td><td>Module 2 — Structures &amp; Unions (S7)</td>
+              <td><a href="./index.html#struct">structs &amp; memory layout</a></td></tr>
+            <tr><td>book_save / book_load CSV, fopen/fclose</td><td>Module 3 — File I/O (S8)</td>
+              <td>—</td></tr>
+            <tr><td>contiguous store vs. node-based store</td><td>Module 4 — Linked Lists (S13)</td>
+              <td><a href="./index.html#list">linked lists</a></td></tr>
+            <tr><td>linear search in book_find</td><td>algorithms / Module 0</td>
+              <td><a href="./index.html#search">linear vs binary search</a></td></tr>
+          </tbody>
+        </table>
+        <div class="tags">
+          <span class="tag sess">Module 0 · S1–2</span>
+          <span class="tag sess">Module 2 · S5–7</span>
+          <span class="tag sess">Module 3 · S8</span>
+          <span class="tag sess">Module 4 · S13</span>
+          <span class="tag demo"><a href="./course.html#program">full course program &rarr;</a></span>
+        </div>
+      </section>
+
+      <!-- 7. EXTENSIONS --------------------------------------------------- -->
+      <section class="demo" id="extend">
+        <h2>6 · Extensions</h2>
+        <p class="lead">Natural next steps that reuse the same data model and reinforce later course topics —
+          good candidates for the group project's "moderate complexity":</p>
+        <ul class="obj">
+          <li><strong>Sorting.</strong> Add <code>book_sort_by_name</code> using <code>qsort</code> with a comparator
+            <code>int cmp(const void *a, const void *b)</code> — a clean demonstration of function pointers and
+            <a href="./index.html#sort">comparison-based sorting</a>.</li>
+          <li><strong>Binary search.</strong> Once sorted by id (which insertion order already gives us), replace the
+            linear <code>book_find</code> with <code>bsearch</code> for O(log n) lookup — compare against the
+            <a href="./index.html#search">search demo</a>.</li>
+          <li><strong>Hashing.</strong> Index contacts by email in a hash table for O(1) average lookup; revisit the
+            bit-mixing ideas from <a href="./index.html#bits">bit manipulation</a> for the hash function.</li>
+          <li><strong>Linked-list backend.</strong> Swap the dynamic array for a singly
+            <a href="./index.html#list">linked list</a> to get O(1) deletion without shifting — and feel the loss of
+            random access. A nice A/B exercise on data-structure trade-offs.</li>
+          <li><strong>Robust CSV.</strong> Quote and escape fields so names with commas round-trip correctly;
+            add a header row and a schema version.</li>
+          <li><strong>Unit tests.</strong> Cover <code>book_add</code>/<code>delete</code>/<code>find</code> with GTest
+            and CMake, as introduced in <a href="./course.html#program">Module 1, Session 4</a>.</li>
+        </ul>
+      </section>
+
+      <!-- 8. REFERENCES --------------------------------------------------- -->
+      <section class="demo" id="refs">
+        <h2>7 · References</h2>
+        <ul class="biblio">
+          <li>
+            <div class="btitle">The C Programming Language, 2nd ed.</div>
+            <div class="bmeta">Brian W. Kernighan &amp; Dennis M. Ritchie (1988). Prentice-Hall. ISBN 0131103628.</div>
+            <div class="bnote">The definitive reference. §6 (structures), §7.8.5 (malloc/free), §7 (file I/O via
+              <code>fopen</code>/<code>fgets</code>/<code>fprintf</code>) directly underpin this project.</div>
+          </li>
+          <li>
+            <div class="btitle">Practical C Programming, 3rd ed.</div>
+            <div class="bmeta">Steve Oualline (1997). O'Reilly. ISBN 1565923065.</div>
+            <div class="bnote">Hands-on coverage of dynamic memory, defensive input handling and debugging — the
+              practical habits used throughout the memory-safety section.</div>
+          </li>
+          <li>
+            <div class="btitle">cp1-lab — interactive demos &amp; course outline</div>
+            <div class="bmeta">This site.</div>
+            <div class="bnote"><a href="./index.html">Interactive demos</a> animate pointers, structs, search, sorting
+              and linked lists; the <a href="./course.html">course outline</a> maps every session.</div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <span>cp1-lab — Andrea Montana · IE BCSAI</span>
+      <span class="more">
+        <a href="./index.html">interactive demos</a>
+        <a href="./course.html">course outline</a>
+        <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
+        <a href="https://github.com/andreaisabelmontana/cp1-lab" target="_blank">source</a>
+      </span>
+    </footer>
+  </body>
+</html>
