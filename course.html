@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#4338CA" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>cp1-lab · course structure — Computer Programming 1 (BCSAI, IE University)</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="./style.css" />
+
+    <style>
+      /* ---- course.html: layout built only on existing :root tokens ---- */
+      .lead { color: var(--ink-soft); font-size: 0.92rem; max-width: 70ch; }
+      .lead + .lead { margin-top: 0.6rem; }
+
+      /* meta grid */
+      .meta-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 0.6rem; margin-top: 0.5rem;
+      }
+      .meta-cell {
+        border: 1px solid var(--rule); border-radius: 6px;
+        padding: 0.55rem 0.7rem; background: #FBFBFD;
+      }
+      .meta-cell .k { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      .meta-cell .v { color: var(--ink); font-weight: 700; font-size: 0.9rem; margin-top: 0.15rem; }
+
+      /* objectives list */
+      .obj { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; gap: 0.45rem; }
+      .obj li {
+        position: relative; padding-left: 1.4rem; color: var(--ink-soft); font-size: 0.88rem;
+      }
+      .obj li::before {
+        content: ''; position: absolute; left: 0; top: 0.45em;
+        width: 8px; height: 8px; border-radius: 2px; background: var(--accent);
+      }
+
+      /* percentage bars */
+      .bars { display: grid; gap: 0.55rem; margin-top: 0.4rem; }
+      .bar-row { display: grid; grid-template-columns: 1fr; gap: 0.2rem; }
+      .bar-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.83rem; }
+      .bar-head .lab { color: var(--ink-soft); font-weight: 500; }
+      .bar-head .pct { color: var(--accent); font-weight: 700; font-family: var(--font-mono); }
+      .bar-track { height: 10px; background: var(--rule); border-radius: 999px; overflow: hidden; }
+      .bar-fill { height: 100%; background: var(--accent); border-radius: 999px; }
+      .bar-note { color: var(--muted); font-size: 0.74rem; }
+
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+      @media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+      .split h3 { font-size: 0.86rem; font-weight: 700; margin: 0 0 0.5rem; color: var(--ink); }
+
+      /* module block */
+      .module { margin-top: 1.1rem; }
+      .module:first-of-type { margin-top: 0.4rem; }
+      .module-head {
+        display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap;
+        padding-bottom: 0.4rem; border-bottom: 1px solid var(--rule-h);
+      }
+      .module-tag {
+        font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+        color: var(--accent); background: var(--accent-soft);
+        padding: 0.15em 0.5em; border-radius: 4px;
+      }
+      .module-head h3 { font-size: 0.98rem; font-weight: 700; margin: 0; color: var(--ink); letter-spacing: -0.01em; }
+      .module-head .msub { color: var(--muted); font-size: 0.78rem; }
+
+      /* timeline of sessions */
+      .timeline { list-style: none; margin: 0; padding: 0.6rem 0 0 0; }
+      .sess {
+        position: relative; padding: 0 0 1.1rem 2.3rem; border-left: 2px solid var(--rule);
+        margin-left: 0.7rem;
+      }
+      .sess:last-child { border-left-color: transparent; padding-bottom: 0.2rem; }
+      .sess .num {
+        position: absolute; left: -0.95rem; top: -0.1rem;
+        width: 1.8rem; height: 1.8rem; border-radius: 999px;
+        background: var(--paper); border: 2px solid var(--accent); color: var(--accent);
+        font-family: var(--font-mono); font-weight: 600; font-size: 0.78rem;
+        display: flex; align-items: center; justify-content: center;
+      }
+      .sess.exam .num { background: var(--accent); color: #fff; }
+      .sess .stitle { font-weight: 700; font-size: 0.9rem; color: var(--ink); }
+      .sess .sdesc { color: var(--ink-soft); font-size: 0.84rem; margin: 0.25rem 0 0; }
+      .sess .topics { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; gap: 0.2rem; }
+      .sess .topics li { position: relative; padding-left: 1rem; color: var(--ink-soft); font-size: 0.82rem; }
+      .sess .topics li::before { content: '›'; position: absolute; left: 0.1rem; color: var(--accent); font-weight: 700; }
+      .tags { margin-top: 0.45rem; display: flex; gap: 0.35rem; flex-wrap: wrap; }
+      .tag {
+        font-size: 0.7rem; font-weight: 500; color: var(--ink-soft);
+        border: 1px solid var(--rule-h); border-radius: 999px; padding: 0.1em 0.6em;
+        background: #FBFBFD;
+      }
+      .tag.read::before { content: '\1F4D6\00A0'; }
+      .tag.demo { color: var(--accent); border-color: var(--accent); }
+      .tag.demo a { color: var(--accent); border-bottom: none; }
+      .tag.demo a:hover { border-bottom: none; text-decoration: underline; }
+
+      .biblio { list-style: none; margin: 0.4rem 0 0; padding: 0; display: grid; gap: 0.7rem; }
+      .biblio li { padding-left: 1rem; border-left: 2px solid var(--accent); }
+      .biblio .btitle { font-weight: 600; color: var(--ink); }
+      .biblio .bmeta { color: var(--muted); font-size: 0.8rem; }
+      .biblio .bnote { color: var(--ink-soft); font-size: 0.82rem; margin-top: 0.2rem; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="title">
+        <span class="dot"></span><strong>cp1-lab</strong>
+        <span class="sub">Computer Programming 1 · course structure</span>
+      </div>
+      <nav>
+        <a href="./index.html">&larr; interactive demos</a>
+        <a href="#overview">overview</a>
+        <a href="#objectives">objectives</a>
+        <a href="#methodology">methodology</a>
+        <a href="#program">program</a>
+        <a href="#biblio">bibliography</a>
+        <a href="./SYLLABUS.pdf" target="_blank">syllabus PDF</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- OVERVIEW + META -->
+      <section class="demo" id="overview">
+        <h2>Computer Programming 1</h2>
+        <p class="cap">Bachelor in Computer Science and Artificial Intelligence (BCSAI) · IE University · syllabus-driven course outline.</p>
+        <p class="lead">This course strengthens students' C programming skills, introducing advanced
+          memory management, multi-threading, and networking concepts. Students build high-performance,
+          networked C applications and explore systems programming, embedded development, and AI-based
+          optimizations.</p>
+        <p class="lead">A deep dive through modern C programming — polishing your skills while learning
+          about best practices, helpful tools and full programming techniques. The companion
+          <a href="./index.html">interactive demos</a> visualize the core ideas: variable tracing,
+          control flow, pointers &amp; memory, recursion and the C data structures covered below.</p>
+
+        <div class="meta-grid">
+          <div class="meta-cell"><div class="k">Program code</div><div class="v">CP1-CSAI.2.M.A</div></div>
+          <div class="meta-cell"><div class="k">Area</div><div class="v">Computer Science</div></div>
+          <div class="meta-cell"><div class="k">Sessions</div><div class="v">30 (live in-person)</div></div>
+          <div class="meta-cell"><div class="k">Credits</div><div class="v">6.0 ECTS</div></div>
+          <div class="meta-cell"><div class="k">Academic year</div><div class="v">25–26</div></div>
+          <div class="meta-cell"><div class="k">Degree course</div><div class="v">Second</div></div>
+          <div class="meta-cell"><div class="k">Semester</div><div class="v">1º</div></div>
+          <div class="meta-cell"><div class="k">Category</div><div class="v">Basic</div></div>
+          <div class="meta-cell"><div class="k">Language</div><div class="v">English</div></div>
+          <div class="meta-cell"><div class="k">Professor</div><div class="v">Suzan T. S. Awinat</div></div>
+          <div class="meta-cell"><div class="k">Contact</div><div class="v">suzant@faculty.ie.edu</div></div>
+          <div class="meta-cell"><div class="k">Office</div><div class="v">T-05.09, IE Tower</div></div>
+        </div>
+      </section>
+
+      <!-- LEARNING OBJECTIVES -->
+      <section class="demo" id="objectives">
+        <h2>Learning objectives</h2>
+        <p class="cap">By the end of the course, students will be able to:</p>
+        <ul class="obj">
+          <li>Master dynamic memory allocation and optimization techniques.</li>
+          <li>Implement data structures using pointers efficiently.</li>
+          <li>Develop multi-threaded and networked applications in C.</li>
+          <li>Apply low-level systems programming concepts (process management, IPC).</li>
+          <li>Debug and optimize C programs for performance and security.</li>
+          <li>Write networked applications using socket programming in C.</li>
+        </ul>
+      </section>
+
+      <!-- METHODOLOGY + ASSESSMENT -->
+      <section class="demo" id="methodology">
+        <h2>Methodology &amp; assessment</h2>
+        <p class="cap">IE University's teaching method is collaborative, active and applied. The professor
+          guides students toward the learning objectives through a diverse mix of activities — lectures,
+          hands-on practice, assignments, online resources, project-based and peer learning, and assessments.</p>
+
+        <div class="split">
+          <div>
+            <h3>Learning activity weighting</h3>
+            <div class="bars">
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Exercises, async sessions, field work</span><span class="pct">36.7%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:36.7%"></div></div>
+                <div class="bar-note">55.0 hours</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Lectures</span><span class="pct">26.7%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:26.7%"></div></div>
+                <div class="bar-note">40.0 hours</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Group work</span><span class="pct">16.7%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:16.7%"></div></div>
+                <div class="bar-note">25.0 hours</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Discussions</span><span class="pct">10.0%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:10%"></div></div>
+                <div class="bar-note">15.0 hours</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Individual studying</span><span class="pct">10.0%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:10%"></div></div>
+                <div class="bar-note">15.0 hours</div>
+              </div>
+            </div>
+            <p class="bar-note" style="margin-top:0.5rem">Total: 100% · 150.0 hours</p>
+          </div>
+
+          <div>
+            <h3>Evaluation criteria</h3>
+            <div class="bars">
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Final exam</span><span class="pct">50%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:50%"></div></div>
+                <div class="bar-note">Multiple-choice + coding sections</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Intermediate tests</span><span class="pct">20%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:20%"></div></div>
+                <div class="bar-note">Midterms (sessions 9 &amp; 20)</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Group project</span><span class="pct">20%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:20%"></div></div>
+                <div class="bar-note">Collaborative program development</div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-head"><span class="lab">Class participation</span><span class="pct">10%</span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:10%"></div></div>
+                <div class="bar-note">Continuous evaluation</div>
+              </div>
+            </div>
+            <h3 style="margin-top:1rem">Software stack</h3>
+            <div class="tags">
+              <span class="tag">CMake — building</span>
+              <span class="tag">GTest — testing</span>
+              <span class="tag">Conda — dependencies</span>
+              <span class="tag">VSCode — editing</span>
+            </div>
+            <p class="bar-note" style="margin-top:0.7rem"><strong>AI policy:</strong> the use of GenAI is
+              not permitted in this course unless stated by the instructor; AI-generated assessment content
+              is treated as academic misconduct.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FULL PROGRAM -->
+      <section class="demo" id="program">
+        <h2>Program — 6 modules, 30 sessions</h2>
+        <p class="cap">Every session of the course, grouped by module. Tags link relevant
+          <a href="./index.html">interactive demos</a> and key readings (K&amp;R = Kernighan &amp; Ritchie,
+          PCP = Practical C Programming, HNP = Hands-On Network Programming).</p>
+
+        <!-- MODULE 0 -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Module 0/6</span>
+            <h3>C Language Basics Refresh</h3>
+            <span class="msub">environment, tooling &amp; review</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">1</span>
+              <div class="stitle">Course Overview &amp; General C Language Review</div>
+              <p class="sdesc">Presents the general contents of the course and runs a fast refresh of C
+                language basics and environment setup.</p>
+              <ul class="topics">
+                <li>Syllabus &amp; course goals</li>
+                <li>C fundamentals refresh: types, expressions, control flow</li>
+                <li>Environment setup</li>
+              </ul>
+              <div class="tags">
+                <span class="tag demo"><a href="./index.html#trace">demo: variable tracing</a></span>
+                <span class="tag demo"><a href="./index.html#expr">demo: expressions</a></span>
+                <span class="tag demo"><a href="./index.html#loop">demo: loops</a></span>
+                <span class="tag read">K&amp;R ch. 1–3</span>
+              </div>
+            </li>
+            <li class="sess">
+              <span class="num">2</span>
+              <div class="stitle">Tooling</div>
+              <p class="sdesc">The development toolchain and intended workflow for the course.</p>
+              <ul class="topics">
+                <li>The terminal</li>
+                <li>Conda for dependencies</li>
+                <li>CMake intro (add_executable / add_library) and compiling</li>
+                <li>Workflow: navigate via terminal, activate conda env, open VSCode, run cmake</li>
+                <li>VSCode refresher · GitHub Education / Copilot in VS Code</li>
+              </ul>
+              <div class="tags"><span class="tag read">PCP — toolchain</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- MODULE 1 -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Module 1/6</span>
+            <h3>Error Handling and Debugging</h3>
+            <span class="msub">2 subtopics</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">3</span>
+              <div class="stitle">Error Handling and Assertions <span class="msub">· subtopic 1/3</span></div>
+              <p class="sdesc">Error handling techniques and assertions in C, while refreshing debugging
+                techniques.</p>
+              <ul class="topics">
+                <li>Error handling strategies</li>
+                <li>Assertions</li>
+                <li>Debugging techniques refresh</li>
+              </ul>
+              <div class="tags"><span class="tag read">PCP — debugging</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">4</span>
+              <div class="stitle">Unit Testing <span class="msub">· subtopic 2/3</span></div>
+              <p class="sdesc">Writing and running automated tests for C code.</p>
+              <ul class="topics">
+                <li>Unit testing principles</li>
+                <li>GTest</li>
+                <li>Setting up tests in CMake</li>
+              </ul>
+              <div class="tags"><span class="tag">GTest · CMake</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- MODULE 2 -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Module 2/6</span>
+            <h3>Pointers and Structures</h3>
+            <span class="msub">3 subtopics</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">5</span>
+              <div class="stitle">Pointers <span class="msub">· subtopic 1/3</span></div>
+              <p class="sdesc">Refresh the concept of pointers, their purpose, and their relationship with
+                memory addresses.</p>
+              <ul class="topics">
+                <li>Pointer declaration &amp; initialization</li>
+                <li>Referencing &amp; dereferencing</li>
+                <li>Pointer arithmetic — how and why it is useful</li>
+              </ul>
+              <div class="tags">
+                <span class="tag demo"><a href="./index.html#ptr">demo: pointers &amp; memory</a></span>
+                <span class="tag read">K&amp;R ch. 5</span>
+              </div>
+            </li>
+            <li class="sess">
+              <span class="num">6</span>
+              <div class="stitle">Dynamic Memory Allocation &amp; Memory Management <span class="msub">· subtopic 2/3</span></div>
+              <p class="sdesc">Allocating and deallocating memory at runtime for flexible, efficient memory
+                management.</p>
+              <ul class="topics">
+                <li>malloc / calloc / realloc / free</li>
+                <li>Runtime allocation &amp; deallocation</li>
+                <li>Efficient memory management patterns</li>
+              </ul>
+              <div class="tags"><span class="tag read">K&amp;R §7.8, §8.7</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">7</span>
+              <div class="stitle">Structures and Unions <span class="msub">· subtopic 3/3</span></div>
+              <p class="sdesc">Structures and unions as data constructs that organize and manipulate related
+                data elements.</p>
+              <ul class="topics">
+                <li>struct definition &amp; member access</li>
+                <li>Unions</li>
+                <li>Intro to data-oriented programming</li>
+              </ul>
+              <div class="tags">
+                <span class="tag demo"><a href="./index.html#struct">demo: structs &amp; memory layout</a></span>
+                <span class="tag read">K&amp;R ch. 6</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- MODULE 3 -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Module 3/6</span>
+            <h3>File Handling and Preprocessor Directives</h3>
+            <span class="msub">file I/O · macros · midterm</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">8</span>
+              <div class="stitle">File Input/Output <span class="msub">· subtopic 1/3</span></div>
+              <p class="sdesc">Reading from and writing to files, with proper error handling and resource
+                management.</p>
+              <ul class="topics">
+                <li>Input/Output</li>
+                <li>Dealing with files</li>
+                <li>Error handling &amp; resource management with files</li>
+              </ul>
+              <div class="tags"><span class="tag read">K&amp;R ch. 7</span></div>
+            </li>
+            <li class="sess exam">
+              <span class="num">9</span>
+              <div class="stitle">First Midterm</div>
+              <p class="sdesc">First intermediate test covering modules 0–2 and file I/O.</p>
+              <div class="tags"><span class="tag">assessment · 20% block</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">10</span>
+              <div class="stitle">Preprocessor Directives and Macros <span class="msub">· subtopic 3/3</span></div>
+              <p class="sdesc">Commands that instruct the compiler before compilation, and macros for reusable
+                inline code snippets and constants.</p>
+              <ul class="topics">
+                <li>Preprocessor directives (#include, #define, conditional compilation)</li>
+                <li>Function-like macros &amp; constants</li>
+                <li>Inline expansion during compilation</li>
+              </ul>
+              <div class="tags"><span class="tag read">K&amp;R §4.11</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- MODULE 4 -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Module 4/6</span>
+            <h3>Advanced Concepts in C</h3>
+            <span class="msub">4 subtopics</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">11</span>
+              <div class="stitle">Bit Manipulation <span class="msub">· subtopic 1/4</span></div>
+              <p class="sdesc">Binary operations and manipulating individual bits for efficient, optimized
+                solutions.</p>
+              <ul class="topics">
+                <li>Bit manipulation (Carmack's fast inverse sqrt, Morton hash for spatial hashing)</li>
+                <li>1's vs 2's complement</li>
+                <li>Using enums as flags</li>
+              </ul>
+              <div class="tags">
+                <span class="tag demo"><a href="./index.html#bits">demo: bit manipulation</a></span>
+                <span class="tag read">PCP — bitwise ops</span>
+              </div>
+            </li>
+            <li class="sess">
+              <span class="num">12</span>
+              <div class="stitle">Enumerations and Typedef in C <span class="msub">· subtopic 2/4</span></div>
+              <p class="sdesc">Named-constant sets and custom type aliases to enhance readability,
+                maintainability and efficiency.</p>
+              <ul class="topics">
+                <li>enum for named constants</li>
+                <li>typedef for type aliases</li>
+                <li>Code readability &amp; maintainability</li>
+              </ul>
+              <div class="tags"><span class="tag read">K&amp;R §2.3, §6.7</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">13</span>
+              <div class="stitle">Linked Lists <span class="msub">· subtopic 3/4</span></div>
+              <p class="sdesc">A fundamental dynamic data structure enabling efficient insertion, deletion and
+                traversal.</p>
+              <ul class="topics">
+                <li>Node = value + next pointer</li>
+                <li>Insertion, deletion, traversal</li>
+                <li>Dynamic storage vs arrays</li>
+              </ul>
+              <div class="tags">
+                <span class="tag demo"><a href="./index.html#list">demo: linked lists</a></span>
+                <span class="tag read">K&amp;R §6.5</span>
+              </div>
+            </li>
+            <li class="sess">
+              <span class="num">14</span>
+              <div class="stitle">Recursion and Backtracking <span class="msub">· subtopic 4/4</span></div>
+              <p class="sdesc">Solving problems by reducing them to smaller instances, and systematically
+                exploring solution spaces by building and undoing partial solutions.</p>
+              <ul class="topics">
+                <li>Recursion &amp; base cases / the call stack</li>
+                <li>Backtracking — try / fail / undo</li>
+              </ul>
+              <div class="tags">
+                <span class="tag demo"><a href="./index.html#recur">demo: recursion &amp; call stack</a></span>
+                <span class="tag demo"><a href="./index.html#queens">demo: N-Queens backtracking</a></span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- MODULE 5 -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Module 5/6</span>
+            <h3>Concurrent Programming</h3>
+            <span class="msub">2 subtopics</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">15</span>
+              <div class="stitle">Thread Concepts &amp; Lifecycle <span class="msub">· subtopic 1/2</span></div>
+              <p class="sdesc">Taking advantage of multi-core platforms where parts of a program execute
+                simultaneously, using C's multithreading capabilities.</p>
+              <ul class="topics">
+                <li>Why concurrency: multiple processors / cores</li>
+                <li>Thread creation &amp; lifecycle</li>
+                <li>Basics of concurrent programming in C</li>
+              </ul>
+              <div class="tags"><span class="tag">POSIX threads</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">16</span>
+              <div class="stitle">Advanced Thread Management <span class="msub">· subtopic 2/2</span></div>
+              <p class="sdesc">Handling common thread issues to build reliable, optimized programs.</p>
+              <ul class="topics">
+                <li>Race conditions, shared data, critical sections</li>
+                <li>POSIX threads, semaphores &amp; barriers</li>
+                <li>Overview of higher-level constructs (OpenMP, MPI)</li>
+              </ul>
+              <div class="tags"><span class="tag">pthreads · OpenMP · MPI</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- MODULE 6 -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Module 6/6</span>
+            <h3>Networking and Sockets</h3>
+            <span class="msub">4 subtopics · mid exam</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">17</span>
+              <div class="stitle">Socket Programming in C for Network Communication <span class="msub">· subtopic 1/4</span></div>
+              <p class="sdesc">Networking concepts and the Socket API to enable communication across networks.</p>
+              <ul class="topics">
+                <li>Networking concepts</li>
+                <li>What a socket is</li>
+                <li>Using the Socket API</li>
+              </ul>
+              <div class="tags"><span class="tag read">HNP ch. 1–3</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">18</span>
+              <div class="stitle">Client–Server Architectures using TCP and UDP <span class="msub">· subtopic 2/4</span></div>
+              <p class="sdesc">Network protocols and the client–server model across different transport
+                protocols.</p>
+              <ul class="topics">
+                <li>Introduction to network protocols</li>
+                <li>TCP protocol &amp; socket I/O operations</li>
+                <li>UDP protocol &amp; socket I/O operations</li>
+              </ul>
+              <div class="tags"><span class="tag read">HNP — TCP/UDP</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">19</span>
+              <div class="stitle">Secure Connections with Sockets <span class="msub">· subtopic 3/4</span></div>
+              <p class="sdesc">Securing network connections using standard protocols via C.</p>
+              <ul class="topics">
+                <li>HTTPS and TLS</li>
+                <li>Encryption &amp; certificate basics</li>
+                <li>How TLS secures connections</li>
+              </ul>
+              <div class="tags"><span class="tag read">HNP — TLS/HTTPS</span></div>
+            </li>
+            <li class="sess exam">
+              <span class="num">20</span>
+              <div class="stitle">Mid Exam</div>
+              <p class="sdesc">Second intermediate test (second midterm).</p>
+              <div class="tags"><span class="tag">assessment · 20% block</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">21</span>
+              <div class="stitle">Networked Applications <span class="msub">· subtopic 4/4</span></div>
+              <p class="sdesc">Reviewing real-world networked applications buildable with the course concepts.</p>
+              <ul class="topics">
+                <li>Real-world networked applications</li>
+                <li>Example: web servers</li>
+              </ul>
+              <div class="tags"><span class="tag read">HNP — applications</span></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- PROJECT, LABS & EXAMS -->
+        <div class="module">
+          <div class="module-head">
+            <span class="module-tag">Wrap-up</span>
+            <h3>Group Project, Labs &amp; Exams</h3>
+            <span class="msub">sessions 22–30</span>
+          </div>
+          <ul class="timeline">
+            <li class="sess">
+              <span class="num">22</span>
+              <div class="stitle">Group Work Session</div>
+              <p class="sdesc">Collaborative Program Development — develop a C program as a team, applying
+                course concepts to a real-world problem.</p>
+              <ul class="topics">
+                <li>Group formation (3–5 members)</li>
+                <li>Program selection &amp; planning/design</li>
+                <li>Task allocation, collaboration &amp; code integration</li>
+              </ul>
+              <div class="tags"><span class="tag">project · 20%</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">23</span>
+              <div class="stitle">Group Work Session</div>
+              <p class="sdesc">Continued collaborative development: integration, testing/debugging and
+                documentation of the group program.</p>
+              <ul class="topics">
+                <li>Code integration</li>
+                <li>Testing &amp; debugging</li>
+                <li>Documentation of functionality, design choices &amp; contributions</li>
+              </ul>
+              <div class="tags"><span class="tag">project · 20%</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">24</span>
+              <div class="stitle">Programming Paradigms (mainly OOP)</div>
+              <p class="sdesc">Introduction to programming paradigms with a focus on object-oriented
+                programming.</p>
+              <div class="tags"><span class="tag">paradigms</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">25</span>
+              <div class="stitle">Programming Paradigms (mainly OOP)</div>
+              <p class="sdesc">Continued exploration of programming paradigms and OOP concepts.</p>
+              <div class="tags"><span class="tag">paradigms</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">26</span>
+              <div class="stitle">Advanced Concepts (LAB)</div>
+              <p class="sdesc">Lab session on advanced concepts, depending on the progress of the course.</p>
+              <div class="tags"><span class="tag">lab</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">27</span>
+              <div class="stitle">Revision</div>
+              <p class="sdesc">Course-wide revision session ahead of final assessments. :)</p>
+              <div class="tags"><span class="tag">revision</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">28</span>
+              <div class="stitle">Final Project Presentation &amp; Evaluation</div>
+              <p class="sdesc">Students present final projects; evaluated on functionality, code quality,
+                design principles and best practices.</p>
+              <div class="tags"><span class="tag">project · 20%</span></div>
+            </li>
+            <li class="sess">
+              <span class="num">29</span>
+              <div class="stitle">Final Project Presentation &amp; Evaluation</div>
+              <p class="sdesc">Continued final project presentations and evaluation.</p>
+              <div class="tags"><span class="tag">project · 20%</span></div>
+            </li>
+            <li class="sess exam">
+              <span class="num">30</span>
+              <div class="stitle">Final Exam</div>
+              <p class="sdesc">Final written exam, consisting of multiple-choice and coding sections.</p>
+              <div class="tags"><span class="tag">assessment · 50%</span></div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- BIBLIOGRAPHY -->
+      <section class="demo" id="biblio">
+        <h2>Bibliography</h2>
+        <p class="cap">Compulsory readings.</p>
+        <ul class="biblio">
+          <li>
+            <div class="btitle">The C Programming Language <span class="tag read"></span></div>
+            <div class="bmeta">Brian W. Kernighan &amp; Dennis M. Ritchie · 2nd ed. · Prentice-Hall, 1988 · ISBN 0131103628</div>
+            <div class="bnote">The definitive guide to C, written by the language's creators — the timeless
+              classic referenced throughout as "K&amp;R".</div>
+          </li>
+          <li>
+            <div class="btitle">Practical C Programming</div>
+            <div class="bmeta">Steve Oualline · 3rd ed. · O'Reilly, 1997 · ISBN 1565923065</div>
+            <div class="bnote">A hands-on guide emphasizing efficient, reliable and portable C, from basics
+              to advanced concepts ("PCP").</div>
+          </li>
+          <li>
+            <div class="btitle">Hands-On Network Programming with C</div>
+            <div class="bmeta">Lewis Van Winkle · Packt Publishing, 2019 · ISBN 9781789349863</div>
+            <div class="bnote">Socket programming in C; writing secure and optimized network code ("HNP").</div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <span>cp1-lab — Andrea Montana · IE BCSAI</span>
+      <span class="more">
+        <a href="./index.html">interactive demos</a>
+        <a href="./SYLLABUS.pdf" target="_blank">syllabus</a>
+        <a href="https://github.com/andreaisabelmontana/cp1-lab" target="_blank">source</a>
+      </span>
+    </footer>
+  </body>
+</html>
