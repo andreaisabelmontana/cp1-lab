@@ -1,28 +1,53 @@
 # cp1-lab
 
-Visual C programming fundamentals. 11 self-contained demos, one per core idea from the IE BCSAI *Computer Programming I* course (C language: variables, control flow, functions, pointers, memory and data structures).
+Interactive companion for **Computer Programming I** (BCSAI, IE University). Eleven self-contained canvas demos covering the C-language core of the course: variables, expressions, control flow, recursion, pointers, search, sorting, linked lists, bits, backtracking and struct layout.
 
 **Live:** https://andreaisabelmontana.github.io/cp1-lab/
 
-Module 0 — C basics: variables, expressions, control flow
-1. Variable tracing — step a short C program line by line and watch each variable update (swap, digit sum, integer power)
-2. Expressions & operator precedence — parse a C arithmetic expression into an evaluation tree; compare `int` (truncating `/` `%`) vs `double` results
-3. Loops — the iteration table: see `init ; condition ; update` produce one row per pass and grow an accumulator
+## What's tested
 
-Module 2/4 — Functions, recursion, pointers
-4. Recursion & the call stack — call tree + depth for `factorial`, `fib` (showing repeated subproblems) and `gcd`
-5. Pointers & memory — addresses, `&x`, `*p` and pointer arithmetic over an `int` array (`p + 1` advances by one element)
+The genuinely-algorithmic parts of the demos live in framework-free ES modules under [`src/`](src/) — no DOM, no dependencies. `index.html` loads `src/app.js`, which imports these modules and keeps only rendering and control wiring. Each module is unit-tested with Node's built-in runner.
 
-Algorithms & data structures
-6. Linear vs binary search — step the probes on a sorted array; compare `O(n)` vs `O(log n)` step counts
-7. Sorting — animated bubble / selection / insertion sort with live comparison and swap counters
-8. Linked lists — singly linked nodes; insert at head/tail, delete by value, watch `next` pointers re-wire
+| Module | Algorithm | Properties proven by the tests |
+| --- | --- | --- |
+| `src/trace.js` | step-snapshot programs: swap, digit sum, integer power | swap exchanges values; digit sum 4093 → 16, 0 → 0; `b^e` incl. `b^0 = 1` |
+| `src/expr.js` | recursive-descent arithmetic parser + int/double evaluator | `*` binds tighter than `+`; parens override; left-associativity; C int division truncates (`7/2 = 3` vs `3.5`); parse errors caught |
+| `src/loops.js` | counted-loop accumulator (sum / product / squares) | `Σ1..5 = 15`, `5! = 120`, `Σi² = 14`; empty loop returns the identity; step skips values |
+| `src/recursion.js` | factorial, Fibonacci, gcd as call trees | known values; factorial makes *n* calls of depth *n*; naive `fib(5)` makes 15 calls; gcd = Euclid |
+| `src/search.js` | linear & binary search on a sorted array | finds present elements, returns `-1` when absent; empty/single arrays; binary stays within `⌈log₂n⌉+1` probes; both agree |
+| `src/sorting.js` | bubble / selection / insertion sort | sorts incl. empty/single/reversed/duplicates; input never mutated; sorted input → 0 swaps; all three agree |
+| `src/bits.js` | fixed-width binary encoding + bitwise ops | `encode`/decode round-trip 0..255; two's-complement `-1`, `-128`; `& \| ^`; shifts wrap to width |
+| `src/structs.js` | C struct alignment / padding / `sizeof` | `{char,int,double}` → 16 B (3 pad); reorder changes layout; tail-padding to largest member |
+| `src/queens.js` | N-Queens backtracking | finds valid placements for n = 4..8; n = 2,3 unsolvable; solution counts match OEIS A000170 (1,0,0,2,10,4,40,92) |
 
-Module 4 — Advanced C
-9. Bit manipulation — an integer as bits in binary / hex, two's-complement signed mode, bitwise `& | ^ << >>`; click a bit to flip it
-10. Backtracking — the N-Queens search: place one queen per column, backtracking on dead ends; counts backtracks
-11. Structs & memory layout — field alignment and padding; reorder fields to see how `sizeof` changes
+The search / sorting / queens animations keep their own step-by-step state machines for the visualisation; the modules above are the underlying algorithms those state machines mirror, verified independently.
 
-Plain HTML + canvas + KaTeX. Indigo accent. Zero build step.
+## Run
+
+Static site, no build step — open `index.html`, or serve the folder:
+
+```sh
+python -m http.server   # then visit http://localhost:8000
+```
+
+## Test
+
+Node 24+, no dependencies:
+
+```sh
+node --test
+```
+
+```
+ℹ tests 78
+ℹ suites 0
+ℹ pass 78
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+```
+
+Plain HTML + canvas + KaTeX. Indigo accent.
 
 Part of the *-lab series: [discrete-math-lab](https://github.com/andreaisabelmontana/discrete-math-lab) · [algos-lab](https://github.com/andreaisabelmontana/algos-lab) · [programming-principles-lab](https://github.com/andreaisabelmontana/programming-principles-lab)

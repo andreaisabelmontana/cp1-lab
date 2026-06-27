@@ -1,0 +1,11 @@
+{
+  "name": "cp1-lab",
+  "version": "1.0.0",
+  "description": "Interactive companion for Computer Programming I (BCSAI, IE University) — tested algorithm cores behind the visual demos.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "MIT"
+}
